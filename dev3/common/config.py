@@ -1,32 +1,26 @@
 import os
-from flask import Flask
-from dev3.common.db_connection import db
-from dotenv import load_dotenv
 
-load_dotenv()  # load .env file
+class Config:
+    # Flask settings
+    SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
+    DEBUG = True
+    HOST = os.getenv("HOST", "127.0.0.1")
+    PORT = int(os.getenv("PORT", "5000"))
 
-def create_app():
-    app = Flask(__name__, 
-                template_folder="dev3/ui/templates", 
-                static_folder="dev3/ui/static")
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://postgres:password@localhost:5432/society_db"
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Config
-    app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET", "fallback_secret")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # Email Settings
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "noreply@society.com")
 
-    # Init DB
-    db.init_app(app)
-
-    # Register Blueprints
-    from dev3.handlers.user_handler import user_bp
-    from dev3.handlers.bill_handler import bill_bp
-    from dev3.handlers.complaint_handler import complaint_bp
-    from dev3.handlers.event_handler import event_bp
-
-    app.register_blueprint(user_bp, url_prefix="/users")
-    app.register_blueprint(bill_bp, url_prefix="/bills")
-    app.register_blueprint(complaint_bp, url_prefix="/complaints")
-    app.register_blueprint(event_bp, url_prefix="/events")
-
-    return app
+    # Scheduler
+    SCHEDULER_API_ENABLED = True

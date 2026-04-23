@@ -1,90 +1,69 @@
-🏢 Society Maintenance Management System
+# SocietyPro - Modern Housing Society Management System
 
-A web-based Society Maintenance Management System built with Flask + PostgreSQL + SQLAlchemy.
-This project helps manage users, bills, complaints, and events in a housing society, with a simple UI and external service integrations (Email, WhatsApp).
+SocietyPro is a comprehensive, full-stack management solution designed to automate the daily operations of residential and commercial societies. Built with a focus on automation, transparency, and high-fidelity user experience.
 
-✨ Features
+## 🚀 Core Features
 
-🔑 User Authentication (login, sessions)
+### 🏢 Society & Asset Management
+- **Multi-Society Support**: Manage multiple society wings or blocks under one dashboard.
+- **House-wise Entry**: Detailed logging for every flat/shop including area square footage, wing details, and occupancy type.
+- **Resident Directory**: Centralized database for resident names, contact details, and digital profiles.
 
-📄 Bill Management (generate, track, update payment status)
+### 💰 Automated Maintenance Billing
+- **Dynamic Billing Engine**: Calculate maintenance based on fixed rates or square-footage-based charges.
+- **XSLT Invoicing**: Generates professional, printable invoices using **XML to HTML (XSLT)** transformation for pixel-perfect presentation.
+- **Monthly Automation**: Automatic generation of monthly bills for the entire society in one click.
 
-🛠️ Complaint Tracking (submit, view, resolve complaints)
+### 📧 Smart Notifications
+- **Email Integration**: Instant notification to residents as soon as an invoice is generated.
+- **Date-Triggered Reminders**: An automated background worker (**APScheduler**) sends reminders 3 days before the due date to ensure timely collections.
+- **Digital Receipts**: Instant confirmation for payments.
 
-📅 Event Management (create and list community events)
+### 📊 PostgreSQL Analysis & Reporting
+- **Financial Dashboard**: Real-time stats on "Total Collection" vs "Pending Dues" per society.
+- **Billing Trends**: Visual charts showing historical collection patterns and target reaching.
+- **Defaulter Tracking**: Quickly identify houses with overdue payments.
 
-📧 Email Notifications (via email_service)
+### 🔐 User Access Control (RBAC)
+- **Multi-Role Support**: 
+  - **Admin**: Full control over all societies, billing, and user management.
+  - **Staff**: Manage billing tasks and resolve service requests/complaints.
+  - **Resident (Member)**: Private portal to view personal invoices and file complaints.
+- **Secure Authentication**: Password hashing and session management via **Flask-Login**.
 
-📱 WhatsApp Notifications (via whatsapp_service)
+### 🛠️ Complaint & Service Management
+- **Digital Notice Board**: Admins can communicate with all residents instantly.
+- **Resident Complaint System**: Residents can file plumbing, electrical, or security issues directly through their portal.
+- **Resolution Tracking**: Admins can track resolution time and update status to keep residents informed.
 
-🎨 UI with HTML, CSS, JS, XSLT
+### 🎨 Modern Tech Stack
+| Layer | Technology |
+|---|---|
+| **Backend** | Python (Flask), SQLAlchemy |
+| **Database** | PostgreSQL |
+| **Frontend** | HTML5, Vanilla CSS (Premium Design), Bootstrap 5 (Login) |
+| **Interactivity** | jQuery & AJAX (No page reloads) |
+| **Reports** | XSLT / XML |
+| **Tasks** | APScheduler / Flask-Mail |
 
-📂 Project Structure
-society_maintenance/
-│── run.py                 # Application entry point
-│── requirements.txt       # Dependencies
-│
-│── dev3/
-│   ├── common/            # Config & DB connection
-│   ├── models/            # Database models
-│   ├── bl/                # Business Logic
-│   ├── handlers/          # Routes / Controllers
-│   ├── services/          # External integrations
-│   └── ui/                # Templates & Static files
-│
+## 🛠️ Installation & Setup
 
-⚙️ Installation & Setup
-1️⃣ Clone the Repository
-git clone https://github.com/<your-username>/society_maintenance.git
-cd society_maintenance
+1. **Clone the project**
+2. **Install requirements**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Configure Database**:
+   Update `DATABASE_URL` in `dev3/common/config.py`.
+4. **Run the application**:
+   ```bash
+   python run.py
+   ```
 
-2️⃣ Create Virtual Environment
-python -m venv venv
-source venv/bin/activate   # On Linux/Mac
-venv\Scripts\activate      # On Windows
+## 📝 Roadmap
+- [ ] Payment Gateway Integration (Stripe/UPI).
+- [ ] Mobile App for Security Guards.
+- [ ] Amenity Booking for Clubhouses.
 
-3️⃣ Install Dependencies
-pip install -r requirements.txt
-
-4️⃣ Configure Environment Variables
-
-Create a .env file in root:
-
-FLASK_SECRET=supersecretkey
-DATABASE_URL=postgresql+psycopg2://username:password@localhost:5432/society_db
-
-
-Replace username, password, and society_db with your PostgreSQL details.
-
-5️⃣ Initialize Database
-flask --app run.py db init
-flask --app run.py db migrate -m "Initial tables"
-flask --app run.py db upgrade
-
-6️⃣ Run the Application
-python run.py
-
-
-Visit: 👉 http://127.0.0.1:5000
-
-📸 Screenshots (optional)
-
-(Add later once your UI is ready — login page, dashboard, bills, etc.)
-
-🚀 Future Improvements
-
-✅ Role-based access (Admin / User)
-
-✅ Online payment gateway integration
-
-✅ Push notifications
-
-✅ Mobile app (React Native / Flutter)
-
-🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
-
-📜 License
-
-This project is licensed under the MIT License.
+---
+*Developed for Society Management Excellence.*

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>Maintenance Billing History</h1>
+</div>
+
+<div class="card">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+                <th style="padding: 1rem;">Society</th>
+                <th style="padding: 1rem;">House</th>
+                <th style="padding: 1rem;">Month</th>
+                <th style="padding: 1rem;">Amount</th>
+                <th style="padding: 1rem;">Status</th>
+                <th style="padding: 1rem;">Invoice</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in bills %}
+            <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 1rem;">{{ b.society_name }}</td>
+                <td style="padding: 1rem;">{{ b.wing }}-{{ b.house_no }}</td>
+                <td style="padding: 1rem;">{{ b.bill_month if b.bill_month else '' }}</td>
+                <td style="padding: 1rem;"><strong>${{ "{:,.2f}".format(b.amount) }}</strong></td>
+                <td style="padding: 1rem;">
+                    <span style="padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; 
+                                 background: {% if b.status == 'unpaid' %}#fee2e2; color: #991b1b; {% else %}#dcfce7; color: #166534;{% endif %};">
+                        {{ b.status.upper() }}
+                    </span>
+                </td>
+                <td style="padding: 1rem;">
+                    <a href="/billing/invoice/{{ b.id }}" target="_blank" class="btn" style="padding: 0.4rem 0.8rem; background: var(--text-muted);">
+                        <i class="fas fa-file-pdf"></i> View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

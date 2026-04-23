@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SocietyPro</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .login-image {
+            flex: 1.2;
+            background: url('/ui/uploads/login_side_image.png') center/cover no-repeat;
+            position: relative;
+        }
+        .login-image::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(99, 102, 241, 0.2), transparent);
+        }
+        .login-form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: white;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+        }
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo i { font-size: 2rem; color: #10b981; }
+        .brand-logo span { color: #1e293b; }
+        
+        .btn-primary {
+            background: #4f46e5;
+            border: none;
+            padding: 0.85rem;
+            font-weight: 700;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        }
+        .form-control {
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            border-color: #4f46e5;
+        }
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.025em;
+        }
+    </style>
+</head>
+<body onload="$('#loader').fadeOut()">
+    <div id="loader"><div class="spinner"></div></div>
+    
+    <div class="login-wrapper">
+        <div class="login-image d-none d-lg-block">
+            <div style="position: absolute; bottom: 4rem; left: 4rem; color: white; z-index: 2; max-width: 500px;">
+                <h1 style="font-weight: 800; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">Elevate Your Society Living.</h1>
+                <p style="font-size: 1.25rem; opacity: 0.9; font-weight: 400;">The most advanced management platform for modern residential communities.</p>
+            </div>
+        </div>
+        
+        <div class="login-form-container">
+            <div class="login-card">
+                <div class="brand-logo">
+                    <i class="fas fa-building-shield"></i>
+                    Society<span>Pro</span>
+                </div>
+                <h5 class="mb-4 text-secondary fw-normal">Welcome back! Please enter your details.</h5>
+                
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-danger py-3 border-0 rounded-4" role="alert" style="font-size: 0.9rem; background: #fef2f2; color: #991b1b;">
+                        <i class="fas fa-circle-exclamation me-2"></i> {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+        
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">USERNAME</label>
+                        <input type="text" name="username" class="form-control" placeholder="admin" required>
+                        <div class="invalid-feedback">Please enter your username.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">PASSWORD</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                        <div class="invalid-feedback">Please enter your password.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                </form>
+                
+                <div class="mt-5 text-center">
+                    <p class="text-muted small">Need an account? <a href="#" class="text-primary text-decoration-none fw-bold">Contact Administration</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

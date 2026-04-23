@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Houses <small class="text-muted" style="font-size: 0.5em;">Management</small></h1>
+    <button class="btn btn-primary" onclick="Houses.resetForm(); Houses.modal.show();">
+        <i class="fas fa-plus me-2"></i>Add House
+    </button>
+</div>
+
+<div id="housesGrid" class="card shadow-sm border-0 p-3">
+    <div class="skeleton-table"></div>
+</div>
+
+<input type="hidden" id="societyId" value="{{ society_id }}">
+
+<!-- House Modal -->
+<div id="houseModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content card border-0">
+            <div class="modal-header border-0">
+                <h2 class="modal-title h4">Add House</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="houseForm" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Wing</label>
+                            <input type="text" class="form-control" name="wing" required>
+                            <div class="invalid-feedback">Wing is required.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">House No</label>
+                            <input type="text" class="form-control" name="house_no" required>
+                            <div class="invalid-feedback">House number is required.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Area (sq ft)</label>
+                            <input type="number" class="form-control" name="area_sq_ft" required>
+                            <div class="invalid-feedback">Area is required.</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" name="house_type">
+                                <option value="1BHK">1BHK</option>
+                                <option value="2BHK">2BHK</option>
+                                <option value="3BHK">3BHK</option>
+                                <option value="Shop">Shop</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <h5>Resident Info</h5>
+                        <div class="col-md-4">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="resident_name">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="resident_email">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Phone</label>
+                            <input type="text" class="form-control" name="resident_phone">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save House</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bill Modal -->
+<div id="billModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content card border-0">
+            <div class="modal-header border-0">
+                <h2 class="modal-title h4">Generate Bill</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="p-3 bg-light border-bottom mb-3">
+                Target: <strong id="billTarget"></strong>
+                <input type="hidden" id="billHouseId">
+            </div>
+            <form id="billForm" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Bill Month</label>
+                        <input type="month" class="form-control" name="bill_month" required>
+                        <div class="invalid-feedback">Please select a month.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fixed Recurring Charge</label>
+                        <input type="number" class="form-control" name="fixed_charge" value="500" required>
+                        <div class="invalid-feedback">Fixed charge is required.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Maintenance Rate (per sq ft)</label>
+                        <input type="number" class="form-control" name="area_rate" value="2.5" step="0.1" required>
+                        <div class="invalid-feedback">Rate is required.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="form-control" name="due_date" required>
+                        <div class="invalid-feedback">Please select a due date.</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Generate & Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
