@@ -79,15 +79,21 @@ const Complaints = {
     },
 
     delete: function(id) {
-        if (confirm('Are you sure you want to delete this complaint?')) {
-            SocietyPro.api(`/complaints/api/${id}`, 'DELETE', null, () => this.loadGrid());
-        }
+        SocietyPro.confirm('Delete Complaint', 'Are you sure you want to delete this complaint?', () => {
+            SocietyPro.api(`/complaints/api/${id}`, 'DELETE', null, () => {
+                SocietyPro.alert('Complaint deleted', 'success');
+                this.loadGrid();
+            });
+        });
     },
 
     resolve: function(id) {
-        if(confirm('Mark this complaint as resolved?')) {
-            SocietyPro.api(`/complaints/api/${id}/status`, 'PATCH', { status: 'resolved' }, () => this.loadGrid());
-        }
+        SocietyPro.confirm('Resolve Complaint', 'Mark this complaint as resolved?', () => {
+            SocietyPro.api(`/complaints/api/${id}/status`, 'PATCH', { status: 'resolved' }, () => {
+                SocietyPro.alert('Complaint resolved successfully', 'success');
+                this.loadGrid();
+            });
+        });
     },
 
     resetForm: function() {

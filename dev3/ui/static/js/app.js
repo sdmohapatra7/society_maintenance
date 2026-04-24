@@ -3,6 +3,34 @@ const SocietyPro = {
         console.log("SocietyPro Initialized");
         this.handleLoader();
         this.initValidation();
+        this.confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        this.toast = new bootstrap.Toast(document.getElementById('liveToast'));
+    },
+
+    alert: function(message, type = 'primary') {
+        const toastEl = document.getElementById('liveToast');
+        const msgEl = document.getElementById('toastMessage');
+        msgEl.innerText = message;
+        
+        // Reset classes
+        toastEl.className = 'toast border-0 shadow-lg align-items-center text-white bg-' + type;
+        this.toast.show();
+    },
+
+    confirm: function(title, message, onConfirm) {
+        document.getElementById('confirmTitle').innerText = title;
+        document.getElementById('confirmMessage').innerText = message;
+        const confirmBtn = document.getElementById('confirmBtn');
+        
+        // Remove old listeners to avoid multiple calls
+        const newBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+        
+        newBtn.onclick = () => {
+            this.confirmModal.hide();
+            onConfirm();
+        };
+        this.confirmModal.show();
     },
 
     initValidation: function() {
@@ -34,7 +62,7 @@ const SocietyPro = {
             error: (err) => {
                 const msg = err.responseJSON?.error || 'Something went wrong';
                 if (error) error(err);
-                else alert(msg);
+                else this.alert(msg, 'danger');
             }
         };
 

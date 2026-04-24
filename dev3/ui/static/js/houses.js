@@ -70,9 +70,12 @@ const Houses = {
     },
 
     delete: function(id) {
-        if (confirm('Delete this house?')) {
-            SocietyPro.api(`/houses/api/${id}`, 'DELETE', null, () => this.loadGrid());
-        }
+        SocietyPro.confirm('Delete House', 'Are you sure you want to delete this house record?', () => {
+            SocietyPro.api(`/houses/api/${id}`, 'DELETE', null, () => {
+                SocietyPro.alert('House deleted successfully', 'success');
+                this.loadGrid();
+            });
+        });
     },
 
     openBillDialog: function(id) {
@@ -109,7 +112,7 @@ const Houses = {
 
         SocietyPro.api('/billing/generate', 'POST', data, (res) => {
             this.billModal.hide();
-            alert('Bill generated successfully!');
+            SocietyPro.alert('Maintenance bill generated and sent to resident!', 'success');
         });
     },
 

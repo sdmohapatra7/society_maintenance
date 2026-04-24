@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Access Management <small class="text-muted" style="font-size: 0.5em;">Configure Feature Access</small></h1>
+    <h1>Role Access Control <small class="text-muted" style="font-size: 0.5em;">Configure Permissions by Role</small></h1>
 </div>
 
 <div class="card shadow-sm border-0 p-4">
@@ -10,44 +10,31 @@
         <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>User</th>
-                    <th>Role</th>
+                    <th>Role Name</th>
                     {% for f in features %}
                     <th class="text-center text-capitalize">{{ f }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
-                {% for u in users %}
+                {% for role in roles %}
                 <tr>
                     <td>
-                        <div class="fw-bold">{{ u.username }}</div>
-                        <div class="text-muted small">{{ u.email }}</div>
-                    </td>
-                    <td>
-                        <span class="badge bg-light text-dark text-uppercase">{{ u.role }}</span>
+                        <div class="fw-bold text-uppercase">{{ role }}</div>
+                        <div class="text-muted small">Global permissions for all {{ role }}s</div>
                     </td>
                     {% for f in features %}
                     <td class="text-center">
                         {% set checked = "" %}
-                        {% if user_perms[u.id] and user_perms[u.id][f] %}
+                        {% if role_perms[role] and role_perms[role][f] %}
                             {% set checked = "checked" %}
-                        {% elif not user_perms[u.id] %}
-                            {# Default logic if no record exists #}
-                            {% if u.role == 'admin' %}
-                                {% set checked = "checked" %}
-                            {% elif u.role == 'resident' and f in ['billing', 'complaints'] %}
-                                {% set checked = "checked" %}
-                            {% elif u.role == 'staff' and f in ['complaints', 'expenses'] %}
-                                {% set checked = "checked" %}
-                            {% endif %}
                         {% endif %}
                         
                         <div class="form-check form-switch d-inline-block">
                             <input class="form-check-input" type="checkbox" 
-                                   onchange="updateAccess({{ u.id }}, '{{ f }}', this.checked)"
+                                   onchange="updateRoleAccess('{{ role }}', '{{ f }}', this.checked)"
                                    {{ checked }} 
-                                   {% if u.role == 'admin' and f == 'users' %}disabled{% endif %}>
+                                   {% if role == 'admin' and f == 'users' %}disabled{% endif %}>
                         </div>
                     </td>
                     {% endfor %}
@@ -60,20 +47,19 @@
 
 <div class="mt-4 alert alert-info border-0 shadow-sm">
     <i class="fas fa-info-circle me-2"></i>
-    Changes take effect immediately upon the user's next page refresh.
+    Changes take effect for all users of the selected role upon their next page refresh.
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-function updateAccess(userId, featureName, canAccess) {
+function updateRoleAccess(role, featureName, canAccess) {
     SocietyPro.api('/access/update', 'POST', {
-        user_id: userId,
+        role: role,
         feature_name: featureName,
         can_access: canAccess
     }, function(res) {
-        // Success feedback if needed
-        console.log('Access updated');
+        console.log('Role access updated');
     });
 }
 </script>

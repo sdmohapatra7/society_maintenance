@@ -60,9 +60,12 @@ const Societies = {
     },
 
     delete: function(id) {
-        if (confirm('Are you sure you want to delete this society and all its data?')) {
-            SocietyPro.api(`/societies/api/${id}`, 'DELETE', null, () => this.loadGrid());
-        }
+        SocietyPro.confirm('Delete Society', 'Are you sure you want to delete this society and all its data?', () => {
+            SocietyPro.api(`/societies/api/${id}`, 'DELETE', null, () => {
+                SocietyPro.alert('Society deleted successfully', 'success');
+                this.loadGrid();
+            });
+        });
     },
 
     resetForm: function() {

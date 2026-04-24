@@ -111,11 +111,12 @@ $(document).ready(function() {
 });
 
 function markAsPaid(billId) {
-    if (confirm('Mark this bill as paid?')) {
+    SocietyPro.confirm('Confirm Payment', 'Are you sure you want to mark this bill as paid manually?', function() {
         SocietyPro.api('/billing/api/' + billId + '/status', 'PUT', {status: 'paid'}, function(res) {
-            location.reload();
+            SocietyPro.alert('Bill marked as paid successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
         });
-    }
+    });
 }
 
 function payOnline(billId) {
@@ -134,8 +135,8 @@ function payOnline(billId) {
                     order_id: response.razorpay_order_id,
                     signature: response.razorpay_signature
                 }, function(verifyRes) {
-                    alert('Payment successful!');
-                    location.reload();
+                    SocietyPro.alert('Payment successful! Your invoice is updated.', 'success');
+                    setTimeout(() => location.reload(), 1500);
                 });
             },
             "theme": {
@@ -144,11 +145,12 @@ function payOnline(billId) {
         };
         
         if (data.order_id.startsWith('order_mock_')) {
-            alert("Razorpay Test Mode: Simulating successful payment...");
-            options.handler({
-                razorpay_payment_id: "pay_mock_123",
-                razorpay_order_id: data.order_id,
-                razorpay_signature: "mock_signature"
+            SocietyPro.confirm('Test Mode', 'This will simulate a successful Razorpay transaction. Continue?', function() {
+                options.handler({
+                    razorpay_payment_id: "pay_mock_123",
+                    razorpay_order_id: data.order_id,
+                    razorpay_signature: "mock_signature"
+                });
             });
             return;
         }

@@ -61,9 +61,12 @@ const Users = {
     },
 
     delete: function(id) {
-        if (confirm('Are you sure you want to delete this user?')) {
-            SocietyPro.api(`/users/api/${id}`, 'DELETE', null, () => this.loadGrid());
-        }
+        SocietyPro.confirm('Delete User', 'Are you sure you want to delete this user?', () => {
+            SocietyPro.api(`/users/api/${id}`, 'DELETE', null, () => {
+                SocietyPro.alert('User deleted successfully', 'success');
+                this.loadGrid();
+            });
+        });
     },
 
     resetForm: function() {

@@ -1,69 +1,95 @@
-# SocietyPro - Modern Housing Society Management System
+# 🏢 SocietyPro - Premium Society Management System
 
-SocietyPro is a comprehensive, full-stack management solution designed to automate the daily operations of residential and commercial societies. Built with a focus on automation, transparency, and high-fidelity user experience.
+**SocietyPro** is a state-of-the-art, full-stack web application designed to streamline the administration and financial management of modern residential societies. It provides a seamless experience for administrators, staff, and residents alike.
 
-## 🚀 Core Features
+---
 
-### 🏢 Society & Asset Management
-- **Multi-Society Support**: Manage multiple society wings or blocks under one dashboard.
-- **House-wise Entry**: Detailed logging for every flat/shop including area square footage, wing details, and occupancy type.
-- **Resident Directory**: Centralized database for resident names, contact details, and digital profiles.
+## 🚀 Key Features
 
-### 💰 Automated Maintenance Billing
-- **Dynamic Billing Engine**: Calculate maintenance based on fixed rates or square-footage-based charges.
-- **XSLT Invoicing**: Generates professional, printable invoices using **XML to HTML (XSLT)** transformation for pixel-perfect presentation.
-- **Monthly Automation**: Automatic generation of monthly bills for the entire society in one click.
+### 🔐 Advanced Security & Access Control
+- **Role-Based Access Control (RBAC):** Dedicated interfaces for Admins, Staff, and Residents.
+- **Dynamic Feature Management:** Admins can dynamically enable or disable specific modules (Billing, Complaints, Societies, etc.) for entire roles via a real-time dashboard.
 
-### 📧 Smart Notifications
-- **Email Integration**: Instant notification to residents as soon as an invoice is generated.
-- **Date-Triggered Reminders**: An automated background worker (**APScheduler**) sends reminders 3 days before the due date to ensure timely collections.
-- **Digital Receipts**: Instant confirmation for payments.
+### 💳 Financial & Billing Management
+- **Automated Billing:** Generate maintenance bills based on fixed charges and area-based rates.
+- **Razorpay Integration:** Secure online payment gateway for residents to pay bills instantly.
+- **Professional PDF Invoices:** Automated generation of professional invoices with "PAID" verification stamps and payment dates.
+- **Expense Tracking:** Comprehensive log of society expenditures with category-wise management.
 
-### 📊 PostgreSQL Analysis & Reporting
-- **Financial Dashboard**: Real-time stats on "Total Collection" vs "Pending Dues" per society.
-- **Billing Trends**: Visual charts showing historical collection patterns and target reaching.
-- **Defaulter Tracking**: Quickly identify houses with overdue payments.
+### 🏠 Property & Resident Management
+- **Society Hierarchy:** Manage multiple societies with their specific addresses and registration details.
+- **House Management:** Track wings, house numbers, area square footage, and resident contact details.
+- **User Management:** Secure registration and profile management for all community members.
 
-### 🔐 User Access Control (RBAC)
-- **Multi-Role Support**: 
-  - **Admin**: Full control over all societies, billing, and user management.
-  - **Staff**: Manage billing tasks and resolve service requests/complaints.
-  - **Resident (Member)**: Private portal to view personal invoices and file complaints.
-- **Secure Authentication**: Password hashing and session management via **Flask-Login**.
+### 🛠️ Resident Services
+- **Complaint Helpdesk:** Residents can file complaints, upload documents, and track resolution status in real-time.
+- **Announcements:** (Coming Soon) Digital notice board for society-wide communication.
 
-### 🛠️ Complaint & Service Management
-- **Digital Notice Board**: Admins can communicate with all residents instantly.
-- **Resident Complaint System**: Residents can file plumbing, electrical, or security issues directly through their portal.
-- **Resolution Tracking**: Admins can track resolution time and update status to keep residents informed.
+### 🎨 Premium User Experience
+- **Modern UI/UX:** Built with Bootstrap 5 and custom CSS for a clean, glassmorphism-inspired aesthetic.
+- **Interactive Notifications:** Replaced generic browser popups with elegant Bootstrap Toasts and Confirmation Modals.
+- **Smooth Animations:** Integrated CSS animations for a fluid feel during login and navigation.
 
-### 🎨 Modern Tech Stack
-| Layer | Technology |
-|---|---|
-| **Backend** | Python (Flask), SQLAlchemy |
-| **Database** | PostgreSQL |
-| **Frontend** | HTML5, Vanilla CSS (Premium Design), Bootstrap 5 (Login) |
-| **Interactivity** | jQuery & AJAX (No page reloads) |
-| **Reports** | XSLT / XML |
-| **Tasks** | APScheduler / Flask-Mail |
+---
 
-## 🛠️ Installation & Setup
+## 🛠️ Technology Stack
 
-1. **Clone the project**
-2. **Install requirements**:
+- **Backend:** Python (Flask Framework)
+- **Database:** PostgreSQL (Architected with SQLAlchemy & pg8000 for high compatibility)
+- **Frontend:** HTML5, Vanilla CSS3, Bootstrap 5, jQuery
+- **Payment Gateway:** Razorpay SDK
+- **Reporting:** fpdf2 (for high-quality PDF generation)
+- **Authentication:** Flask-Login
+
+---
+
+## 📂 Project Structure
+
+```text
+society_maintenance/
+├── dev3/                   # Core Application Source
+│   ├── bl/                 # Business Logic (Calculations, PDF logic)
+│   ├── common/             # Config, DB Setup, & Auth Utilities
+│   ├── handler/            # Flask Routes (Blueprints)
+│   ├── sql/                # SQL Query Library & Schema
+│   └── ui/                 # Frontend Assets
+│       ├── static/         # CSS, JS (SocietyPro.js), & Images
+│       └── templates/      # HTML Templates (Jinja2)
+├── run.py                  # Application Entry Point
+├── seed.py                 # Initial Database Seeding Script
+└── requirements.txt        # Python Dependencies
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+1. **Clone the repository** and navigate to the project root.
+2. **Setup Virtual Environment:**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+3. **Install Dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
-3. **Configure Database**:
-   Update `DATABASE_URL` in `dev3/common/config.py`.
-4. **Run the application**:
+4. **Initialize Database:**
+   Ensure PostgreSQL is running, then seed the initial data:
+   ```bash
+   python seed.py
+   ```
+5. **Run the Application:**
    ```bash
    python run.py
    ```
-
-## 📝 Roadmap
-- [ ] Payment Gateway Integration (Stripe/UPI).
-- [ ] Mobile App for Security Guards.
-- [ ] Amenity Booking for Clubhouses.
+   Access the app at `http://127.0.0.1:5000`
 
 ---
-*Developed for Society Management Excellence.*
+
+## 👨‍💻 Contributing
+This project is architected for scalability. To add a new feature:
+1. Define the SQL in `dev3/sql/`.
+2. Implement Business Logic in `dev3/bl/`.
+3. Create a Route Handler in `dev3/handler/`.
+4. Register the Blueprint in `dev3/__init__.py`.

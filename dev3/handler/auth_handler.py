@@ -13,7 +13,15 @@ def login():
         
         success, res = UserBL.login(username, password)
         if success:
-            user_obj = User(res)
+            from dev3.common import db
+            from sqlalchemy import text
+            
+            # Fetch role-based permissions
+            q = text("SELECT feature_name FROM role_permissions WHERE role = :role AND can_access = TRUE")
+            perms_rows = db.session.execute(q, {"role": res['role']}).fetchall()
+            permissions = {r[0] for r in perms_rows}
+            
+            user_obj = User(res, permissions)
             login_user(user_obj)
             return redirect(url_for('main.dashboard'))
         else:
