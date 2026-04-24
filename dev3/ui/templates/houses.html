@@ -2,7 +2,12 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Houses <small class="text-muted" style="font-size: 0.5em;">Management</small></h1>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/societies/" class="btn btn-outline-secondary btn-sm" title="Back to Societies">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <h1 class="m-0">Houses <small class="text-muted" style="font-size: 0.5em;">Management</small></h1>
+    </div>
     <button class="btn btn-primary" onclick="Houses.resetForm(); Houses.modal.show();">
         <i class="fas fa-plus me-2"></i>Add House
     </button>
@@ -117,4 +122,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/houses.js') }}"></script>
 {% endblock %}

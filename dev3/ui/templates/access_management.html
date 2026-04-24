@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Access Management <small class="text-muted" style="font-size: 0.5em;">Configure Feature Access</small></h1>
+</div>
+
+<div class="card shadow-sm border-0 p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    {% for f in features %}
+                    <th class="text-center text-capitalize">{{ f }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div class="fw-bold">{{ u.username }}</div>
+                        <div class="text-muted small">{{ u.email }}</div>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark text-uppercase">{{ u.role }}</span>
+                    </td>
+                    {% for f in features %}
+                    <td class="text-center">
+                        {% set checked = "" %}
+                        {% if user_perms[u.id] and user_perms[u.id][f] %}
+                            {% set checked = "checked" %}
+                        {% elif not user_perms[u.id] %}
+                            {# Default logic if no record exists #}
+                            {% if u.role == 'admin' %}
+                                {% set checked = "checked" %}
+                            {% elif u.role == 'resident' and f in ['billing', 'complaints'] %}
+                                {% set checked = "checked" %}
+                            {% elif u.role == 'staff' and f in ['complaints', 'expenses'] %}
+                                {% set checked = "checked" %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        <div class="form-check form-switch d-inline-block">
+                            <input class="form-check-input" type="checkbox" 
+                                   onchange="updateAccess({{ u.id }}, '{{ f }}', this.checked)"
+                                   {{ checked }} 
+                                   {% if u.role == 'admin' and f == 'users' %}disabled{% endif %}>
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4 alert alert-info border-0 shadow-sm">
+    <i class="fas fa-info-circle me-2"></i>
+    Changes take effect immediately upon the user's next page refresh.
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateAccess(userId, featureName, canAccess) {
+    SocietyPro.api('/access/update', 'POST', {
+        user_id: userId,
+        feature_name: featureName,
+        can_access: canAccess
+    }, function(res) {
+        // Success feedback if needed
+        console.log('Access updated');
+    });
+}
+</script>
+{% endblock %}

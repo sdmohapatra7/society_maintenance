@@ -27,17 +27,29 @@
             <ul>
                 <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 
-                {% if current_user.role == 'admin' %}
+                {% if current_user.has_feature('societies') %}
                 <li><a href="/societies/" class="{% if '/societies' in request.path %}active{% endif %}"><i class="fas fa-city"></i> Societies</a></li>
+                {% endif %}
+                
+                {% if current_user.has_feature('users') %}
                 <li><a href="/users/" class="{% if '/users' in request.path %}active{% endif %}"><i class="fas fa-users-gear"></i> Users</a></li>
                 {% endif %}
 
-                {% if current_user.role in ['admin', 'staff'] %}
+                {% if current_user.role == 'admin' %}
+                <li><a href="/access/" class="{% if '/access' in request.path %}active{% endif %}"><i class="fas fa-user-shield"></i> Access Management</a></li>
+                {% endif %}
+
+                {% if current_user.has_feature('billing') %}
                 <li><a href="/billing/" class="{% if '/billing' in request.path %}active{% endif %}"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
+                {% endif %}
+                
+                {% if current_user.has_feature('expenses') %}
                 <li><a href="/expenses/" class="{% if '/expenses' in request.path %}active{% endif %}"><i class="fas fa-wallet"></i> Expenses</a></li>
                 {% endif %}
 
+                {% if current_user.has_feature('complaints') %}
                 <li><a href="/complaints/" class="{% if '/complaints' in request.path %}active{% endif %}"><i class="fas fa-circle-exclamation"></i> Complaints</a></li>
+                {% endif %}
             </ul>
         </nav>
 

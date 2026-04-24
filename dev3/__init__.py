@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from .common import Config, db
 from .common.mail_utils import mail
@@ -46,6 +47,7 @@ def create_app():
     from .handler.billing_handler import maintenance_bp
     from .handler.complaint_handler import complaint_bp
     from .handler.expense_handler import expense_bp
+    from .handler.access_handler import access_bp
 
     app.register_blueprint(main_bp, url_prefix="/")
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -55,6 +57,7 @@ def create_app():
     app.register_blueprint(maintenance_bp, url_prefix="/billing")
     app.register_blueprint(complaint_bp, url_prefix="/complaints")
     app.register_blueprint(expense_bp, url_prefix="/expenses")
+    app.register_blueprint(access_bp, url_prefix="/access")
 
     @app.route('/ui/uploads/<path:filename>')
     def uploaded_file(filename):

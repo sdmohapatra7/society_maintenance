@@ -10,7 +10,7 @@ class Config:
     # Database
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg2://postgres:password@localhost:5432/society_db"
+        "postgresql+pg8000://postgres:password@localhost:5432/society_db"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
