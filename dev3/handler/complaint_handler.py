@@ -7,9 +7,7 @@ complaint_bp = Blueprint('complaint', __name__)
 @complaint_bp.route('/')
 @login_required
 def index():
-    if current_user.role == 'admin':
-        # Admin sees all? For now, let's keep it simple.
-        # Actually admin should see all.
+    if current_user.role in ['admin', 'staff']:
         from dev3.common import db
         from sqlalchemy import text
         q = text("SELECT c.*, u.username FROM complaints c JOIN users u ON c.user_id = u.id ORDER BY c.created_at DESC")
@@ -23,7 +21,7 @@ def index():
 def get_complaints():
     from dev3.common import db
     from sqlalchemy import text
-    if current_user.role == 'admin':
+    if current_user.role in ['admin', 'staff']:
         q = text("SELECT c.*, u.username FROM complaints c JOIN users u ON c.user_id = u.id ORDER BY c.created_at DESC")
         complaints = db.session.execute(q).fetchall()
     else:
