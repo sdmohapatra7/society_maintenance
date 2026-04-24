@@ -29,6 +29,43 @@ def login():
             
     return render_template('login.html')
 
+@auth_bp.route('/setup-password', methods=['GET', 'POST'])
+def setup_password():
+    token = request.args.get('token')
+    if not token:
+        return "Invalid Token", 400
+        
+    from dev3.common import db
+    from sqlalchemy import text
+    from datetime import datetime
+    
+    q = text("SELECT * FROM user_setup_tokens WHERE token = :token AND used = FALSE AND expires_at > :now")
+    token_rec = db.session.execute(q, {"token": token, "now": datetime.now()}).fetchone()
+    
+    if not token_rec:
+        return "Token expired or invalid", 400
+        
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if new_password != confirm_password:
+            flash("Passwords do not match", "error")
+            return render_template('setup_password.html', token=token)
+            
+        # Update user password
+        from dev3.bl.user_bl import UserBL
+        UserBL.change_password(token_rec.user_id, new_password)
+        
+        # Mark token as used
+        db.session.execute(text("UPDATE user_setup_tokens SET used = TRUE WHERE id = :id"), {"id": token_rec.id})
+        db.session.commit()
+        
+        flash("Password set successfully! You can now login.", "success")
+        return redirect(url_for('auth.login'))
+        
+    return render_template('setup_password.html', token=token)
+
 @auth_bp.route('/logout')
 @login_required
 def logout():

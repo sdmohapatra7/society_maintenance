@@ -2,7 +2,7 @@ const Societies = {
     modal: null,
     editingId: null,
     init: function() {
-        this.modal = new bootstrap.Modal(document.getElementById('societyModal'));
+        this.modal = new bootstrap.Modal($('#societyModal')[0]);
         this.loadGrid();
         $('#societyForm').on('submit', this.handleFormSubmit.bind(this));
         
@@ -41,6 +41,7 @@ const Societies = {
         SocietyPro.api(url, method, data, (res) => {
             this.loadGrid();
             this.modal.hide();
+            SocietyPro.alert(this.editingId ? 'Society updated successfully' : 'Society created successfully', 'success');
             this.resetForm();
         });
     },

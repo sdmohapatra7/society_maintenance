@@ -47,6 +47,13 @@
                     {% endif %}
                 </td>
             </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                    <i class="fas fa-file-invoice-dollar mb-3 d-block" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p>No billing records found.</p>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -103,103 +110,5 @@
 
 {% block scripts %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-let editModal = null;
-
-$(document).ready(function() {
-    editModal = new bootstrap.Modal(document.getElementById('editBillModal'));
-});
-
-function markAsPaid(billId) {
-    SocietyPro.confirm('Confirm Payment', 'Are you sure you want to mark this bill as paid manually?', function() {
-        SocietyPro.api('/billing/api/' + billId + '/status', 'PUT', {status: 'paid'}, function(res) {
-            SocietyPro.alert('Bill marked as paid successfully!', 'success');
-            setTimeout(() => location.reload(), 1500);
-        });
-    });
-}
-
-function payOnline(billId) {
-    SocietyPro.api('/billing/api/create-order/' + billId, 'POST', {}, function(data) {
-        var options = {
-            "key": data.key_id,
-            "amount": data.amount,
-            "currency": "INR",
-            "name": "SocietyPro",
-            "description": "Maintenance Bill Payment",
-            "order_id": data.order_id,
-            "handler": function (response) {
-                SocietyPro.api('/billing/api/verify-payment', 'POST', {
-                    bill_id: billId,
-                    payment_id: response.razorpay_payment_id,
-                    order_id: response.razorpay_order_id,
-                    signature: response.razorpay_signature
-                }, function(verifyRes) {
-                    SocietyPro.alert('Payment successful! Your invoice is updated.', 'success');
-                    setTimeout(() => location.reload(), 1500);
-                });
-            },
-            "theme": {
-                "color": "#8b5cf6"
-            }
-        };
-        
-        if (data.order_id.startsWith('order_mock_')) {
-            SocietyPro.confirm('Test Mode', 'This will simulate a successful Razorpay transaction. Continue?', function() {
-                options.handler({
-                    razorpay_payment_id: "pay_mock_123",
-                    razorpay_order_id: data.order_id,
-                    razorpay_signature: "mock_signature"
-                });
-            });
-            return;
-        }
-
-        var rzp = new Razorpay(options);
-        rzp.on('payment.failed', function (response){
-            alert("Payment failed: " + response.error.description);
-        });
-        rzp.open();
-    });
-}
-
-function editBill(billId) {
-    SocietyPro.api('/billing/api/' + billId, 'GET', null, function(data) {
-        $('#editBillId').val(data.id);
-        // Format dates correctly for input fields
-        let month = data.bill_month;
-        if (month && month.length > 7) {
-            month = month.substring(0, 7); // yyyy-mm
-        }
-        $('#editBillMonth').val(month);
-        $('#editAmount').val(data.amount);
-        $('#editFixedCharge').val(data.fixed_charge);
-        $('#editAreaCharge').val(data.area_charge);
-        $('#editDueDate').val(data.due_date);
-        $('#editStatus').val(data.status);
-        
-        editModal.show();
-    });
-}
-
-function submitEditBill(e) {
-    e.preventDefault();
-    if (!SocietyPro.validateForm('#editBillForm')) return;
-    
-    const id = $('#editBillId').val();
-    const data = {
-        bill_month: $('#editBillMonth').val() + '-01',
-        amount: parseFloat($('#editAmount').val()),
-        fixed_charge: parseFloat($('#editFixedCharge').val()),
-        area_charge: parseFloat($('#editAreaCharge').val()),
-        due_date: $('#editDueDate').val(),
-        status: $('#editStatus').val()
-    };
-    
-    SocietyPro.api('/billing/api/' + id, 'PUT', data, function(res) {
-        editModal.hide();
-        location.reload();
-    });
-}
-</script>
+<script src="{{ url_for('static', filename='js/billing.js') }}"></script>
 {% endblock %}

@@ -5,7 +5,10 @@ house_bp = Blueprint('house', __name__)
 
 @house_bp.route('/society/<int:society_id>', methods=['GET'])
 def list_by_society(society_id):
-    return render_template('houses.html', society_id=society_id)
+    from dev3.common import db
+    from sqlalchemy import text
+    house_types = db.session.execute(text("SELECT * FROM master_data WHERE category = 'HOUSE_TYPE' AND is_active = TRUE")).fetchall()
+    return render_template('houses.html', society_id=society_id, house_types=house_types)
 
 @house_bp.route('/api', methods=['POST'])
 def create_house():

@@ -48,10 +48,9 @@
                         <div class="col-md-3">
                             <label class="form-label">Type</label>
                             <select class="form-select" name="house_type">
-                                <option value="1BHK">1BHK</option>
-                                <option value="2BHK">2BHK</option>
-                                <option value="3BHK">3BHK</option>
-                                <option value="Shop">Shop</option>
+                                {% for type in house_types %}
+                                <option value="{{ type.value }}">{{ type.label }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <hr>

@@ -14,10 +14,15 @@ def allowed_file(filename):
 @expense_bp.route('/')
 @login_required
 def index():
-    if current_user.role not in ['admin', 'staff']:
+    if current_user.role not in ['admin', 'staff', 'accountant']:
         return "Unauthorized", 403
+    
+    from dev3.common import db
+    from sqlalchemy import text
+    categories = db.session.execute(text("SELECT * FROM master_data WHERE category = 'EXPENSE_CATEGORY' AND is_active = TRUE")).fetchall()
+    
     expenses = ExpenseBL.list_all()
-    return render_template('expenses.html', expenses=expenses)
+    return render_template('expenses.html', expenses=expenses, categories=categories)
 
 @expense_bp.route('/api', methods=['POST'])
 @login_required

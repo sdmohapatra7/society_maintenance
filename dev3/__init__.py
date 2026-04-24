@@ -48,6 +48,9 @@ def create_app():
     from .handler.complaint_handler import complaint_bp
     from .handler.expense_handler import expense_bp
     from .handler.access_handler import access_bp
+    from .handler.report_handler import report_bp
+    from .handler.accounting_handler import accounting_bp
+    from .handler.settings_handler import settings_bp
 
     app.register_blueprint(main_bp, url_prefix="/")
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -58,6 +61,9 @@ def create_app():
     app.register_blueprint(complaint_bp, url_prefix="/complaints")
     app.register_blueprint(expense_bp, url_prefix="/expenses")
     app.register_blueprint(access_bp, url_prefix="/access")
+    app.register_blueprint(report_bp, url_prefix="/reports")
+    app.register_blueprint(accounting_bp, url_prefix="/accounting")
+    app.register_blueprint(settings_bp, url_prefix="/settings")
 
     @app.route('/ui/uploads/<path:filename>')
     def uploaded_file(filename):

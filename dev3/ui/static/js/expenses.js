@@ -1,7 +1,7 @@
 const Expenses = {
     modal: null,
     init: function() {
-        this.modal = new bootstrap.Modal(document.getElementById('expenseModal'));
+        this.modal = new bootstrap.Modal($('#expenseModal')[0]);
         $('#expenseForm').on('submit', this.handleCreate.bind(this));
     },
 

@@ -2,7 +2,7 @@ const Users = {
     modal: null,
     editingId: null,
     init: function() {
-        this.modal = new bootstrap.Modal(document.getElementById('userModal'));
+        this.modal = new bootstrap.Modal($('#userModal')[0]);
         this.loadGrid();
         $('#userForm').on('submit', this.handleFormSubmit.bind(this));
         
@@ -41,6 +41,7 @@ const Users = {
         SocietyPro.api(url, method, data, (res) => {
             this.loadGrid();
             this.modal.hide();
+            SocietyPro.alert(this.editingId ? 'User updated successfully' : 'User created successfully', 'success');
             this.resetForm();
         });
     },

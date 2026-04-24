@@ -13,7 +13,9 @@ class User(UserMixin):
         self.permissions = permissions
         
     def has_feature(self, feature_name):
-        # Admin still has access to everything by default, but we'll check role_permissions too
+        # Admin bypasses all checks and has access to everything
+        if self.role == 'admin':
+            return True
         return feature_name in self.permissions
 
 def load_user_callback(user_id):

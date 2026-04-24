@@ -3,47 +3,42 @@ const SocietyPro = {
         console.log("SocietyPro Initialized");
         this.handleLoader();
         this.initValidation();
-        this.confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-        this.toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        this.confirmModal = new bootstrap.Modal($('#confirmModal')[0]);
+        this.toast = new bootstrap.Toast($('#liveToast')[0]);
     },
 
     alert: function(message, type = 'primary') {
-        const toastEl = document.getElementById('liveToast');
-        const msgEl = document.getElementById('toastMessage');
-        msgEl.innerText = message;
+        const $toast = $('#liveToast');
+        const $msg = $('#toastMessage');
+        $msg.text(message);
         
-        // Reset classes
-        toastEl.className = 'toast border-0 shadow-lg align-items-center text-white bg-' + type;
+        $toast.attr('class', 'toast border-0 shadow-lg align-items-center text-white bg-' + type);
         this.toast.show();
     },
 
     confirm: function(title, message, onConfirm) {
-        document.getElementById('confirmTitle').innerText = title;
-        document.getElementById('confirmMessage').innerText = message;
-        const confirmBtn = document.getElementById('confirmBtn');
+        $('#confirmTitle').text(title);
+        $('#confirmMessage').text(message);
+        const $confirmBtn = $('#confirmBtn');
         
-        // Remove old listeners to avoid multiple calls
-        const newBtn = confirmBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-        
-        newBtn.onclick = () => {
+        // Remove old listeners to avoid multiple calls using jQuery's off()
+        $confirmBtn.off('click').on('click', () => {
             this.confirmModal.hide();
             onConfirm();
-        };
+        });
+        
         this.confirmModal.show();
     },
 
     initValidation: function() {
-        // Bootstrap validation logic for all forms with .needs-validation
-        const forms = document.querySelectorAll('.needs-validation');
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
+        $('.needs-validation').each(function() {
+            $(this).on('submit', function(event) {
+                if (!this.checkValidity()) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
-                form.classList.add('was-validated');
-            }, false);
+                $(this).addClass('was-validated');
+            });
         });
     },
 
@@ -53,7 +48,6 @@ const SocietyPro = {
         });
     },
 
-    // Common AJAX wrapper
     ajax: function(url, method, data, success, error) {
         let options = {
             url: url,
@@ -83,18 +77,18 @@ const SocietyPro = {
     },
 
     validateForm: function(formSelector) {
-        const form = $(formSelector);
-        if (form[0].checkValidity() === false) {
-            form.addClass('was-validated');
+        const $form = $(formSelector);
+        if ($form[0].checkValidity() === false) {
+            $form.addClass('was-validated');
             return false;
         }
         return true;
     },
 
     renderTable: function(targetSelector, columns, data, actions = []) {
-        const container = $(targetSelector);
+        const $container = $(targetSelector);
         if (!data || data.length === 0) {
-            container.html('<div class="text-center p-5 text-muted"><i class="fas fa-folder-open mb-3 d-block" style="font-size: 3rem; opacity: 0.3;"></i><p>No records found</p></div>');
+            $container.html('<div class="text-center p-5 text-muted"><i class="fas fa-folder-open mb-3 d-block" style="font-size: 3rem; opacity: 0.3;"></i><p>No records found</p></div>');
             return;
         }
 
@@ -120,7 +114,7 @@ const SocietyPro = {
         });
 
         html += '</tbody></table></div>';
-        container.html(html);
+        $container.html(html);
     }
 };
 

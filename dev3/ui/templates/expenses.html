@@ -78,13 +78,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Category</label>
-                        <select class="form-select" name="category">
-                            <option value="Maintenance">Maintenance</option>
-                            <option value="Electricity">Electricity</option>
-                            <option value="Water">Water</option>
-                            <option value="Security">Security</option>
-                            <option value="Landscaping">Landscaping</option>
-                            <option value="Other">Other</option>
+                        <select class="form-select" name="category" required>
+                            {% for cat in categories %}
+                            <option value="{{ cat.value }}">{{ cat.label }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">

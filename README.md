@@ -7,38 +7,44 @@
 ## 🚀 Key Features
 
 ### 🔐 Advanced Security & Access Control
-- **Role-Based Access Control (RBAC):** Dedicated interfaces for Admins, Staff, and Residents.
+- **Role-Based Access Control (RBAC):** Dedicated interfaces for Admins, Staff, Accountants, and Residents.
 - **Dynamic Feature Management:** Admins can dynamically enable or disable specific modules (Billing, Complaints, Societies, etc.) for entire roles via a real-time dashboard.
+
+### 📊 Executive Analytics & Reporting
+- **Interactive Dashboards:** Real-time financial trends using Chart.js, including Revenue vs. Expenses and Collection Efficiency.
+- **Advanced Reporting:** High-performance CSV export engine with filtering by Society, Date Range (including FY presets), and Payment Status.
+- **Accounting Hub:** Centralized financial overview tracking Net Balance, Total Receivables, and category-wise expenditure.
 
 ### 💳 Financial & Billing Management
 - **Automated Billing:** Generate maintenance bills based on fixed charges and area-based rates.
-- **Razorpay Integration:** Secure online payment gateway for residents to pay bills instantly.
+- **Razorpay Integration:** Secure online payment gateway with automated verification and mock-mode for testing.
 - **Professional PDF Invoices:** Automated generation of professional invoices with "PAID" verification stamps and payment dates.
-- **Expense Tracking:** Comprehensive log of society expenditures with category-wise management.
+- **Expense Tracking:** Comprehensive log of society expenditures with dynamic category management.
 
-### 🏠 Property & Resident Management
+### 🏠 Property & Master Data Management
+- **Settings Module:** Complete control over global app settings (App Name, Currency) and Master Data (Expense Categories, House Types).
 - **Society Hierarchy:** Manage multiple societies with their specific addresses and registration details.
 - **House Management:** Track wings, house numbers, area square footage, and resident contact details.
-- **User Management:** Secure registration and profile management for all community members.
 
 ### 🛠️ Resident Services
 - **Complaint Helpdesk:** Residents can file complaints, upload documents, and track resolution status in real-time.
-- **Announcements:** (Coming Soon) Digital notice board for society-wide communication.
+- **Auto-Onboarding:** Automated user registration and welcome invitation emails when a new house is registered.
 
 ### 🎨 Premium User Experience
 - **Modern UI/UX:** Built with Bootstrap 5 and custom CSS for a clean, glassmorphism-inspired aesthetic.
+- **Modular Frontend:** Zero inline scripts. All logic is separated into standalone, jQuery-AJAX driven modules.
 - **Interactive Notifications:** Replaced generic browser popups with elegant Bootstrap Toasts and Confirmation Modals.
-- **Smooth Animations:** Integrated CSS animations for a fluid feel during login and navigation.
 
 ---
 
 ## 🛠️ Technology Stack
 
 - **Backend:** Python (Flask Framework)
-- **Database:** PostgreSQL (Architected with SQLAlchemy & pg8000 for high compatibility)
-- **Frontend:** HTML5, Vanilla CSS3, Bootstrap 5, jQuery
+- **Database:** PostgreSQL (SQLAlchemy ORM)
+- **Frontend:** HTML5, CSS3, Bootstrap 5, **jQuery**
+- **Visualization:** Chart.js
 - **Payment Gateway:** Razorpay SDK
-- **Reporting:** fpdf2 (for high-quality PDF generation)
+- **Reporting:** fpdf2 (PDF Generation)
 - **Authentication:** Flask-Login
 
 ---
@@ -48,13 +54,13 @@
 ```text
 society_maintenance/
 ├── dev3/                   # Core Application Source
-│   ├── bl/                 # Business Logic (Calculations, PDF logic)
+│   ├── bl/                 # Business Logic (Reporting, Expense, Maintenance)
 │   ├── common/             # Config, DB Setup, & Auth Utilities
-│   ├── handler/            # Flask Routes (Blueprints)
-│   ├── sql/                # SQL Query Library & Schema
+│   ├── handler/            # Flask Blueprints (API & Page routes)
+│   ├── sql/                # SQL Query Library
 │   └── ui/                 # Frontend Assets
-│       ├── static/         # CSS, JS (SocietyPro.js), & Images
-│       └── templates/      # HTML Templates (Jinja2)
+│       ├── static/         # CSS, Images, & Modular JS Files
+│       └── templates/      # Jinja2 HTML Templates
 ├── run.py                  # Application Entry Point
 ├── seed.py                 # Initial Database Seeding Script
 └── requirements.txt        # Python Dependencies

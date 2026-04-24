@@ -2,7 +2,7 @@ const Complaints = {
     modal: null,
     editingId: null,
     init: function() {
-        this.modal = new bootstrap.Modal(document.getElementById('complaintModal'));
+        this.modal = new bootstrap.Modal($('#complaintModal')[0]);
         this.loadGrid();
         $('#complaintForm').on('submit', this.handleFormSubmit.bind(this));
         

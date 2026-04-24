@@ -5,8 +5,8 @@ const Houses = {
     societyId: null,
     
     init: function() {
-        this.modal = new bootstrap.Modal(document.getElementById('houseModal'));
-        this.billModal = new bootstrap.Modal(document.getElementById('billModal'));
+        this.modal = new bootstrap.Modal($('#houseModal')[0]);
+        this.billModal = new bootstrap.Modal($('#billModal')[0]);
         this.societyId = $('#societyId').val();
         
         this.loadGrid();
@@ -51,6 +51,7 @@ const Houses = {
         SocietyPro.api(url, method, data, (res) => {
             this.loadGrid();
             this.modal.hide();
+            SocietyPro.alert(this.editingId ? 'House updated successfully' : 'House created successfully. Welcome email sent!', 'success');
             this.resetForm();
         });
     },

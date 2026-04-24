@@ -11,8 +11,9 @@ def index():
     if current_user.role != 'admin':
         return "Unauthorized", 403
     
-    # Get all unique roles
-    roles = ['admin', 'resident', 'staff']
+    # Get all unique roles from permissions and users table
+    q_roles = text("SELECT DISTINCT role FROM role_permissions UNION SELECT DISTINCT role FROM users")
+    roles = [row[0] for row in db.session.execute(q_roles).fetchall() if row[0]]
     
     # Get permissions for all roles
     q_perms = text("SELECT role, feature_name, can_access FROM role_permissions")
@@ -25,7 +26,11 @@ def index():
             role_perms[p.role] = {}
         role_perms[p.role][p.feature_name] = p.can_access
         
-    features = ['societies', 'houses', 'users', 'billing', 'expenses', 'complaints']
+    # Get unique features from permissions table
+    q_features = text("SELECT DISTINCT feature_name FROM role_permissions")
+    features = [row[0] for row in db.session.execute(q_features).fetchall() if row[0]]
+    if not features:
+        features = ['societies', 'houses', 'users', 'billing', 'expenses', 'complaints', 'reports', 'accounting']
     
     return render_template('access_management.html', 
                            roles=roles, 

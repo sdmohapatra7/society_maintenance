@@ -4,20 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SocietyPro</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: white;
+            background-color: #f8fafc;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             margin: 0;
             overflow: hidden;
         }
@@ -26,141 +22,167 @@
             width: 100%;
             height: 100vh;
         }
-        .login-image {
-            flex: 1.2;
-            background: url('/ui/uploads/login_side_image.png') center/cover no-repeat;
+        .login-image-side {
+            flex: 1.3;
+            background: url('/ui/uploads/login_bg.png') center/cover no-repeat;
             position: relative;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+            z-index: 2;
         }
-        .login-image::after {
+        /* Subtle dark gradient overlay to make text pop, but keep image visible */
+        .login-image-side::after {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(99, 102, 241, 0.2), transparent);
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.7) 0%, transparent 60%);
         }
-        .login-form-container {
+        .image-content {
+            position: absolute;
+            bottom: 4rem;
+            left: 4rem;
+            color: white;
+            z-index: 3;
+            max-width: 500px;
+            animation: fadeInUp 1s ease-out;
+        }
+        .login-form-side {
             flex: 1;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
-            background: white;
-        }
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-        }
-        .brand-logo {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: #4f46e5;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .brand-logo i { font-size: 2rem; color: #10b981; }
-        .brand-logo span { color: #1e293b; }
-        
-        .btn-primary {
-            background: #4f46e5;
-            border: none;
-            padding: 0.85rem;
-            font-weight: 700;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            background: #4338ca;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
-        }
-        .form-control {
-            padding: 0.85rem 1rem;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-        .form-control:focus {
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-            border-color: #4f46e5;
-        }
-        .form-label {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.025em;
-        }
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 4rem;
+            z-index: 1;
         }
         .login-card {
             width: 100%;
             max-width: 400px;
             animation: fadeInRight 0.8s ease-out;
         }
-        .login-image .content {
-            position: absolute;
-            bottom: 4rem;
-            left: 4rem;
-            color: white;
-            z-index: 2;
-            max-width: 500px;
-            animation: fadeInUp 1s ease-out;
+        .brand-logo {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+        .brand-logo i { color: #4f46e5; }
+        .brand-logo span { color: #4f46e5; }
+        
+        .form-label {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.6rem;
+        }
+        .form-control {
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-weight: 500;
+        }
+        .form-control:focus {
+            background: white;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        .btn-primary {
+            background: #4f46e5;
+            border: none;
+            padding: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            margin-top: 1rem;
+        }
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; display: flex; justify-content: center; align-items: center; z-index: 10000;
+        }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4f46e5; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body onload="$('#loader').fadeOut()">
+<body onload="$('#loader').fadeOut(600)">
     <div id="loader"><div class="spinner"></div></div>
-    
+
     <div class="login-wrapper">
-        <div class="login-image d-none d-lg-block">
-            <div class="content">
-                <h1 style="font-weight: 800; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">Elevate Your Society Living.</h1>
-                <p style="font-size: 1.25rem; opacity: 0.9; font-weight: 400;">The most advanced management platform for modern residential communities.</p>
+        <!-- Left Side: Image (Vibrant & Visible) -->
+        <div class="login-image-side d-none d-lg-block">
+            <div class="image-content">
+                <h1 style="font-weight: 800; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem;">The Gold Standard in Society Living.</h1>
+                <p style="font-size: 1.25rem; opacity: 0.9;">Manage your community with elegance and efficiency.</p>
             </div>
         </div>
-        
-        <div class="login-form-container">
+
+        <!-- Right Side: Form (Premium & Clear) -->
+        <div class="login-form-side">
             <div class="login-card">
-                <div class="brand-logo">
+                <div class="brand-logo mb-4">
                     <i class="fas fa-building-shield"></i>
                     Society<span>Pro</span>
                 </div>
-                <h5 class="mb-4 text-secondary fw-normal">Welcome back! Please enter your details.</h5>
-                
+                <h4 class="fw-bold mb-1">Welcome back</h4>
+                <p class="text-muted mb-4">Please enter your account details below.</p>
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                    {% for category, message in messages %}
-                      <div class="alert alert-danger py-3 border-0 rounded-4" role="alert" style="font-size: 0.9rem; background: #fef2f2; color: #991b1b;">
-                        <i class="fas fa-circle-exclamation me-2"></i> {{ message }}
-                      </div>
-                    {% endfor %}
-                  {% endif %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-danger py-3 border-0 rounded-4 mb-4" style="background: #fef2f2; color: #991b1b; font-size: 0.9rem;">
+                                <i class="fas fa-circle-exclamation me-2"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 {% endwith %}
-        
-                <form method="POST" class="needs-validation" novalidate>
+
+                <form method="POST">
                     <div class="mb-3">
-                        <label class="form-label">USERNAME</label>
-                        <input type="text" name="username" class="form-control" placeholder="admin" required>
-                        <div class="invalid-feedback">Please enter your username.</div>
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="admin" required autofocus>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">PASSWORD</label>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                        <div class="invalid-feedback">Please enter your password.</div>
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" required style="border-right: none;">
+                            <span class="input-group-text bg-light" style="cursor: pointer; border-left: none; border-radius: 0 12px 12px 0;" onclick="togglePassword()">
+                                <i class="fas fa-eye text-muted" id="toggleIcon"></i>
+                            </span>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember">
+                            <label class="form-check-label small" for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="text-primary text-decoration-none small fw-bold">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Sign In to Platform</button>
                 </form>
-                
+
                 <div class="mt-5 text-center">
-                    <p class="text-muted small">Need an account? <a href="#" class="text-primary text-decoration-none fw-bold">Contact Administration</a></p>
+                    <p class="text-muted small">Need access? <a href="#" class="text-primary text-decoration-none fw-bold">Contact Admin</a></p>
                 </div>
             </div>
         </div>
@@ -168,6 +190,18 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        function togglePassword() {
+            const $pwd = $('#password');
+            const $icon = $('#toggleIcon');
+            if ($pwd.attr('type') === 'password') {
+                $pwd.attr('type', 'text');
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                $pwd.attr('type', 'password');
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>
