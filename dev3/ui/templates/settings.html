@@ -82,6 +82,79 @@
     </div>
 </div>
 
+<!-- Role Master Section -->
+<div class="row g-4 mt-2">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="h5 mb-0"><i class="fas fa-user-tag me-2 text-warning"></i> Role Master</h3>
+                <button class="btn btn-sm btn-warning text-white" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                    <i class="fas fa-plus me-1"></i> Add New Role
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-3">Role Name</th>
+                            <th>Description</th>
+                            <th>Created At</th>
+                            <th class="text-end pe-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role in roles %}
+                        <tr>
+                            <td class="ps-3"><span class="badge bg-soft-warning text-warning px-3">{{ role.name }}</span></td>
+                            <td class="text-muted small">{{ role.description or 'No description' }}</td>
+                            <td class="text-muted small">{{ role.created_at.strftime('%Y-%m-%d') if role.created_at else 'N/A' }}</td>
+                            <td class="text-end pe-3">
+                                <button class="btn btn-sm btn-light text-danger" onclick="deleteRole({{ role.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not roles %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">No custom roles defined.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Role Modal -->
+<div class="modal fade" id="addRoleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Create New Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addRoleForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Role Name</label>
+                        <input type="text" class="form-control" name="name" placeholder="e.g. Accountant, Security" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Description</label>
+                        <textarea class="form-control" name="description" rows="3" placeholder="Briefly describe the responsibilities of this role"></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-warning text-white" onclick="submitRole()">Create Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}

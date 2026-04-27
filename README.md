@@ -25,15 +25,20 @@
 - **Settings Module:** Complete control over global app settings (App Name, Currency) and Master Data (Expense Categories, House Types).
 - **Society Hierarchy:** Manage multiple societies with their specific addresses and registration details.
 - **House Management:** Track wings, house numbers, area square footage, and resident contact details.
+- **Vehicle & Parking Management:** Track resident vehicles (cars/bikes) and strictly manage parking slot allocations.
 
-### 🛠️ Resident Services
+### 🛠️ Resident Services & Community
 - **Complaint Helpdesk:** Residents can file complaints, upload documents, and track resolution status in real-time.
+- **Events & Notices:** Broadcast society gatherings, meetings, and important announcements with date/time tracking.
+- **Visitor Security Logs:** Digital register for tracking the entry and exit of guests, delivery agents, and staff.
 - **Auto-Onboarding:** Automated user registration and welcome invitation emails when a new house is registered.
 
 ### 🎨 Premium User Experience
 - **Modern UI/UX:** Built with Bootstrap 5 and custom CSS for a clean, glassmorphism-inspired aesthetic.
-- **Modular Frontend:** Zero inline scripts. All logic is separated into standalone, jQuery-AJAX driven modules.
+- **Data Grids:** Clean, responsive table layouts for all data management with consistent "Empty State" designs.
 - **Interactive Notifications:** Replaced generic browser popups with elegant Bootstrap Toasts and Confirmation Modals.
+- **Global API Loaders:** Centralized AJAX interceptors that automatically display loading spinners during backend interactions.
+- **Smart Navigation:** Auto-scrolling sidebar that natively detects and centers the active route using JavaScript `scrollIntoView`.
 
 ---
 

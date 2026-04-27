@@ -22,9 +22,13 @@ def index():
             master_data[r.category] = []
         master_data[r.category].append(dict(r._mapping))
         
+    # Fetch Roles
+    roles = db.session.execute(text("SELECT * FROM roles ORDER BY name")).fetchall()
+        
     return render_template('settings.html', 
                            app_settings=[dict(r._mapping) for r in app_settings], 
-                           master_data=master_data)
+                           master_data=master_data,
+                           roles=[dict(r._mapping) for r in roles])
 
 @settings_bp.route('/app/update', methods=['POST'])
 @login_required
@@ -58,3 +62,27 @@ def delete_master_data(id):
     db.session.execute(text("DELETE FROM master_data WHERE id = :id"), {"id": id})
     db.session.commit()
     return jsonify({"success": True})
+
+@settings_bp.route('/role/add', methods=['POST'])
+@login_required
+def add_role():
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    data = request.json
+    try:
+        db.session.execute(text("INSERT INTO roles (name, description) VALUES (:name, :description)"), data)
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"success": False, "error": str(e)})
+
+@settings_bp.route('/role/delete/<int:id>', methods=['DELETE'])
+@login_required
+def delete_role(id):
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized"}), 403
+    db.session.execute(text("DELETE FROM roles WHERE id = :id"), {"id": id})
+    db.session.commit()
+    return jsonify({"success": True})
+

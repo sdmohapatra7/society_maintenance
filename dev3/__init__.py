@@ -7,8 +7,11 @@ from flask_apscheduler import APScheduler
 from flask_login import LoginManager
 from .common.auth_utils import load_user_callback
 
+from authlib.integrations.flask_client import OAuth
+
 scheduler = APScheduler()
 login_manager = LoginManager()
+oauth = OAuth()
 
 def create_app():
     app = Flask(__name__, 
@@ -20,6 +23,16 @@ def create_app():
     db.init_app(app)
     mail.init_app(app)
     scheduler.init_app(app)
+    oauth.init_app(app)
+    
+    # Configure Google OAuth
+    oauth.register(
+        name='google',
+        server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
     
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -51,6 +64,9 @@ def create_app():
     from .handler.report_handler import report_bp
     from .handler.accounting_handler import accounting_bp
     from .handler.settings_handler import settings_bp
+    from .handler.event_handler import event_bp
+    from .handler.visitor_handler import visitor_bp
+    from .handler.vehicle_handler import vehicle_bp
 
     app.register_blueprint(main_bp, url_prefix="/")
     app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -64,6 +80,9 @@ def create_app():
     app.register_blueprint(report_bp, url_prefix="/reports")
     app.register_blueprint(accounting_bp, url_prefix="/accounting")
     app.register_blueprint(settings_bp, url_prefix="/settings")
+    app.register_blueprint(event_bp, url_prefix="/events")
+    app.register_blueprint(visitor_bp, url_prefix="/visitors")
+    app.register_blueprint(vehicle_bp, url_prefix="/vehicles")
 
     @app.route('/ui/uploads/<path:filename>')
     def uploaded_file(filename):

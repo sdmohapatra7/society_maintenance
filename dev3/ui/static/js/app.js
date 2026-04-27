@@ -2,6 +2,7 @@ const SocietyPro = {
     init: function() {
         console.log("SocietyPro Initialized");
         this.handleLoader();
+        this.handleSidebarScroll();
         this.initValidation();
         this.confirmModal = new bootstrap.Modal($('#confirmModal')[0]);
         this.toast = new bootstrap.Toast($('#liveToast')[0]);
@@ -48,7 +49,19 @@ const SocietyPro = {
         });
     },
 
+    handleSidebarScroll: function() {
+        // Run after a short delay to ensure DOM is fully rendered
+        setTimeout(() => {
+            const activeLink = document.querySelector('aside nav a.active');
+            if (activeLink) {
+                // Scroll the nav container so the active link is centered
+                activeLink.scrollIntoView({ behavior: 'auto', block: 'center' });
+            }
+        }, 100);
+    },
+
     ajax: function(url, method, data, success, error) {
+        $('#loader').fadeIn('fast');
         let options = {
             url: url,
             method: method,
@@ -57,6 +70,9 @@ const SocietyPro = {
                 const msg = err.responseJSON?.error || 'Something went wrong';
                 if (error) error(err);
                 else this.alert(msg, 'danger');
+            },
+            complete: () => {
+                $('#loader').fadeOut('fast');
             }
         };
 

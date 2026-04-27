@@ -71,3 +71,56 @@ def setup_password():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
+
+@auth_bp.route('/login/google')
+def login_google():
+    from dev3 import oauth
+    redirect_uri = url_for('auth.authorize_google', _external=True)
+    return oauth.google.authorize_redirect(redirect_uri)
+
+@auth_bp.route('/login/google/authorize')
+def authorize_google():
+    from dev3 import oauth
+    from dev3.common import db
+    from sqlalchemy import text
+    from dev3.common.auth_utils import User
+    
+    token = oauth.google.authorize_access_token()
+    user_info = token.get('userinfo')
+    
+    if not user_info or not user_info.get('email'):
+        flash("Google login failed", "error")
+        return redirect(url_for('auth.login'))
+        
+    email = user_info['email']
+    
+    # Check if user exists in the database by email
+    # Assuming email is either username or stored in users table
+    # Wait, let's see if the user table has an email field
+    q = text("SELECT id, username, email, role, house_id, password, is_active FROM users WHERE email = :email OR username = :email")
+    user_rec = db.session.execute(q, {"email": email}).fetchone()
+    
+    if user_rec:
+        if not user_rec.is_active:
+            flash("Account is disabled", "error")
+            return redirect(url_for('auth.login'))
+            
+        res = {
+            "id": user_rec.id,
+            "username": user_rec.username,
+            "email": user_rec.email,
+            "role": user_rec.role,
+            "house_id": user_rec.house_id
+        }
+        
+        # Fetch role-based permissions
+        q_perms = text("SELECT feature_name FROM role_permissions WHERE role = :role AND can_access = TRUE")
+        perms_rows = db.session.execute(q_perms, {"role": res['role']}).fetchall()
+        permissions = {r[0] for r in perms_rows}
+        
+        user_obj = User(res, permissions)
+        login_user(user_obj)
+        return redirect(url_for('main.dashboard'))
+    else:
+        flash(f"User with email {email} not found in the system. Please contact the administrator.", "error")
+        return redirect(url_for('auth.login'))

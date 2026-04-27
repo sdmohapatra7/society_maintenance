@@ -9,12 +9,23 @@ user_bp = Blueprint('user', __name__)
 def index():
     if current_user.role != 'admin':
         return "Unauthorized", 403
-    # In a real app, I'd have a list_all in UserBL
     from dev3.common import db
     from sqlalchemy import text
-    q = text("SELECT id, username, email, role, is_active FROM users")
-    users = db.session.execute(q).fetchall()
-    return render_template('users.html', users=users)
+    
+    # Fetch all users
+    q_users = text("SELECT id, username, email, role, is_active FROM users")
+    users = db.session.execute(q_users).fetchall()
+    
+    # Fetch all available roles (standard + custom)
+    q_roles = text("""
+        SELECT name FROM roles 
+        UNION 
+        SELECT 'admin' as name UNION SELECT 'staff' UNION SELECT 'resident' UNION SELECT 'accountant'
+    """)
+    roles = [row[0] for row in db.session.execute(q_roles).fetchall() if row[0]]
+    roles.sort()
+    
+    return render_template('users.html', users=users, roles=roles)
 
 @user_bp.route('/api', methods=['GET'])
 @login_required

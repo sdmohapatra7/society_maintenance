@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-gray-800 mb-1">Events & Notices</h3>
+            <p class="text-muted small mb-0">Upcoming gatherings and society announcements</p>
+        </div>
+        {% if current_user.role == 'admin' %}
+        <button class="btn btn-primary shadow-sm rounded-3" data-bs-toggle="modal" data-bs-target="#addEventModal">
+            <i class="fas fa-plus me-2"></i> Create Event
+        </button>
+        {% endif %}
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Event Title</th>
+                            <th>Date & Time</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            {% if current_user.role == 'admin' %}
+                            <th class="text-end pe-4">Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-gray-800">{{ event.title }}</td>
+                            <td>
+                                <div class="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded-2">
+                                    <i class="fas fa-calendar-day me-1"></i> {{ event.event_date_str[:10] }}
+                                </div>
+                                <div class="small text-muted mt-1"><i class="fas fa-clock me-1"></i> {{ event.event_date_str[11:] }}</div>
+                            </td>
+                            <td><i class="fas fa-map-marker-alt text-muted me-1"></i> {{ event.location }}</td>
+                            <td class="text-muted small text-truncate" style="max-width: 250px;" title="{{ event.description }}">{{ event.description }}</td>
+                            {% if current_user.role == 'admin' %}
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-light text-primary me-1" onclick="openEditEventModal({{ event.id }}, '{{ event.title|replace('\'', '\\\'') }}', '{{ event.event_date_iso }}', '{{ event.location|replace('\'', '\\\'') }}', '{{ event.description|replace('\'', '\\\'')|replace('\n', '\\n') }}')" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-light text-danger" onclick="deleteEvent({{ event.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 bg-white rounded-bottom-4 border-0">
+                                <i class="fas fa-folder-open fa-3x mb-3 text-muted opacity-50"></i>
+                                <h5 class="fw-bold text-gray-800">No Events Found</h5>
+                                <p class="text-muted small mb-0">There are currently no upcoming events or notices to display.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.role == 'admin' %}
+<div class="modal fade" id="addEventModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-bottom px-4 py-3">
+                <h5 class="modal-title fw-bold">Create Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addEventForm">
+                    <input type="hidden" name="event_id" id="eventId">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Event Title</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Date & Time</label>
+                            <input type="datetime-local" class="form-control" name="event_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Location</label>
+                            <input type="text" class="form-control" name="location">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Description</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top px-4 py-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary px-4" onclick="submitEvent()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function submitEvent() {
+        if (!SocietyPro.validateForm('#addEventForm')) {
+            return;
+        }
+        
+        const data = {
+            title: $('input[name="title"]').val(),
+            event_date: $('input[name="event_date"]').val(),
+            location: $('input[name="location"]').val(),
+            description: $('textarea[name="description"]').val()
+        };
+        
+        SocietyPro.api('/events/add', 'POST', data, () => {
+            SocietyPro.alert("Event created successfully!", "success");
+            setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function openEditEventModal(id, title, date, location, description) {
+        $('#eventId').val(id);
+        $('input[name="title"]').val(title);
+        $('input[name="event_date"]').val(date);
+        $('input[name="location"]').val(location);
+        $('textarea[name="description"]').val(description);
+        
+        $('.modal-title').text('Edit Event');
+        $('#addEventModal .btn-primary').text('Save Changes').attr('onclick', 'updateEvent()');
+        
+        var modal = new bootstrap.Modal(document.getElementById('addEventModal'));
+        modal.show();
+    }
+    
+    // Reset modal on close so 'Create' works correctly next time
+    $('#addEventModal').on('hidden.bs.modal', function () {
+        $('#eventId').val('');
+        $('#addEventForm')[0].reset();
+        $('.modal-title').text('Create Event');
+        $('#addEventModal .btn-primary').text('Create').attr('onclick', 'submitEvent()');
+        $('#addEventForm').removeClass('was-validated');
+    });
+
+    function updateEvent() {
+        if (!SocietyPro.validateForm('#addEventForm')) {
+            return;
+        }
+        
+        const id = $('#eventId').val();
+        const data = {
+            title: $('input[name="title"]').val(),
+            event_date: $('input[name="event_date"]').val(),
+            location: $('input[name="location"]').val(),
+            description: $('textarea[name="description"]').val()
+        };
+        
+        SocietyPro.api(`/events/edit/${id}`, 'POST', data, () => {
+            SocietyPro.alert("Event updated successfully!", "success");
+            setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function deleteEvent(id) {
+        SocietyPro.confirm('Delete Event', 'Are you sure you want to delete this event?', () => {
+            SocietyPro.api(`/events/delete/${id}`, 'POST', {}, () => location.reload());
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-gray-800 mb-1">Visitor Logs</h3>
+            <p class="text-muted small mb-0">Track guest and service entry/exits</p>
+        </div>
+        {% if current_user.role in ['admin', 'staff'] %}
+        <button class="btn btn-primary shadow-sm rounded-3" data-bs-toggle="modal" data-bs-target="#addVisitorModal">
+            <i class="fas fa-user-plus me-2"></i> Log Entry
+        </button>
+        {% endif %}
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Visitor Name</th>
+                            <th>Purpose</th>
+                            <th>Visiting</th>
+                            <th>Entry Time</th>
+                            <th>Exit Time</th>
+                            <th>Status</th>
+                            {% if current_user.role in ['admin', 'staff'] %}
+                            <th class="text-end pe-4">Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in visitors %}
+                        <tr>
+                            <td class="ps-4 fw-bold">
+                                {{ v.name }}
+                                {% if v.phone %}<br><small class="text-muted fw-normal"><i class="fas fa-phone fa-xs"></i> {{ v.phone }}</small>{% endif %}
+                            </td>
+                            <td>{{ v.purpose }}</td>
+                            <td>{{ v.wing }}-{{ v.house_no }}</td>
+                            <td>{{ v.entry_time_str }}</td>
+                            <td>{{ v.exit_time_str or '-' }}</td>
+                            <td>
+                                {% if v.status == 'in' %}
+                                <span class="badge bg-success bg-opacity-10 text-success">Inside</span>
+                                {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary">Left</span>
+                                {% endif %}
+                            </td>
+                            {% if current_user.role in ['admin', 'staff'] %}
+                            <td class="text-end pe-4 text-nowrap">
+                                {% if v.status == 'in' %}
+                                <button class="btn btn-sm btn-outline-danger rounded-3 me-2" onclick="checkoutVisitor({{ v.id }})">Checkout</button>
+                                {% endif %}
+                                <button class="btn btn-sm btn-light text-primary me-1" onclick="openEditVisitorModal({{ v.id }}, '{{ v.name|replace('\'', '\\\'') }}', '{{ v.phone|replace('\'', '\\\'') }}', '{{ v.purpose }}', {{ v.house_id or 'null' }})" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-light text-danger" onclick="deleteVisitor({{ v.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
+                                <h5>No Visitor Logs Found</h5>
+                                <p class="small mb-0">There are no guest or service logs to display.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.role in ['admin', 'staff'] %}
+<div class="modal fade" id="addVisitorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header border-bottom px-4 py-3">
+                <h5 class="modal-title fw-bold">Log Visitor Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addVisitorForm">
+                    <input type="hidden" name="visitor_id" id="visitorId">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Visitor Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Phone Number</label>
+                            <input type="text" class="form-control" name="phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Purpose</label>
+                            <select class="form-select" name="purpose">
+                                <option value="Guest">Guest</option>
+                                <option value="Delivery">Delivery</option>
+                                <option value="Service/Repair">Service/Repair</option>
+                                <option value="Maid/Staff">Maid/Staff</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Visiting House</label>
+                        <select class="form-select" name="house_id" required>
+                            {% for h in houses %}
+                            <option value="{{ h.id }}">{{ h.wing }}-{{ h.house_no }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top px-4 py-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary px-4" onclick="submitVisitor()">Log Entry</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function submitVisitor() {
+        if (!SocietyPro.validateForm('#addVisitorForm')) {
+            return;
+        }
+        
+        const data = {
+            name: $('input[name="name"]').val(),
+            phone: $('input[name="phone"]').val(),
+            purpose: $('select[name="purpose"]').val(),
+            house_id: $('select[name="house_id"]').val()
+        };
+        
+        SocietyPro.api('/visitors/add', 'POST', data, () => {
+            SocietyPro.alert("Visitor logged successfully!", "success");
+            setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function openEditVisitorModal(id, name, phone, purpose, houseId) {
+        $('#visitorId').val(id);
+        $('input[name="name"]').val(name);
+        $('input[name="phone"]').val(phone);
+        $('select[name="purpose"]').val(purpose);
+        $('select[name="house_id"]').val(houseId);
+        
+        $('.modal-title').text('Edit Visitor Log');
+        $('#addVisitorModal .btn-primary').text('Save Changes').attr('onclick', 'updateVisitor()');
+        
+        var modal = new bootstrap.Modal(document.getElementById('addVisitorModal'));
+        modal.show();
+    }
+    
+    $('#addVisitorModal').on('hidden.bs.modal', function () {
+        $('#visitorId').val('');
+        $('#addVisitorForm')[0].reset();
+        $('.modal-title').text('Log Visitor Entry');
+        $('#addVisitorModal .btn-primary').text('Log Entry').attr('onclick', 'submitVisitor()');
+        $('#addVisitorForm').removeClass('was-validated');
+    });
+
+    function updateVisitor() {
+        if (!SocietyPro.validateForm('#addVisitorForm')) {
+            return;
+        }
+        
+        const id = $('#visitorId').val();
+        const data = {
+            name: $('input[name="name"]').val(),
+            phone: $('input[name="phone"]').val(),
+            purpose: $('select[name="purpose"]').val(),
+            house_id: $('select[name="house_id"]').val()
+        };
+        
+        SocietyPro.api(`/visitors/edit/${id}`, 'POST', data, () => {
+            SocietyPro.alert("Visitor updated successfully!", "success");
+            setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function checkoutVisitor(id) {
+        SocietyPro.confirm('Checkout Visitor', 'Mark visitor as checked out?', () => {
+            SocietyPro.api(`/visitors/checkout/${id}`, 'POST', {}, () => {
+                SocietyPro.alert("Visitor checked out!", "success");
+                setTimeout(() => location.reload(), 800);
+            });
+        });
+    }
+
+    function deleteVisitor(id) {
+        SocietyPro.confirm('Delete Log', 'Are you sure you want to delete this visitor log permanently?', () => {
+            SocietyPro.api(`/visitors/delete/${id}`, 'POST', {}, () => {
+                SocietyPro.alert("Visitor log deleted!", "success");
+                setTimeout(() => location.reload(), 800);
+            });
+        });
+    }
+</script>
+{% endblock %}

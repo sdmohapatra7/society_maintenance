@@ -15,15 +15,15 @@
             background-color: #f8fafc;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         .login-wrapper {
             display: flex;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
         }
         .login-image-side {
-            flex: 1.3;
+            flex: 1;
             background: url('/ui/uploads/login_bg.png') center/cover no-repeat;
             position: relative;
             box-shadow: 10px 0 30px rgba(0,0,0,0.1);
@@ -46,17 +46,20 @@
             animation: fadeInUp 1s ease-out;
         }
         .login-form-side {
-            flex: 1;
+            flex: 0 0 500px;
             background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem;
+            padding: 2rem;
             z-index: 1;
+            overflow-y: auto;
         }
         .login-card {
             width: 100%;
             max-width: 400px;
+            margin: auto;
+            padding: 2rem 0;
             animation: fadeInRight 0.8s ease-out;
         }
         .brand-logo {
@@ -178,7 +181,17 @@
                         <a href="#" class="text-primary text-decoration-none small fw-bold">Forgot password?</a>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Sign In to Platform</button>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Sign In to Platform</button>
+                    
+                    <div class="position-relative mb-3 text-center">
+                        <hr class="text-muted">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-2 small text-muted fw-bold">OR</span>
+                    </div>
+
+                    <a href="{{ url_for('auth.login_google') }}" class="btn btn-outline-dark w-100 fw-bold d-flex align-items-center justify-content-center gap-2" style="border-radius: 12px; padding: 0.85rem;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 20px;">
+                        Sign in with Google
+                    </a>
                 </form>
 
                 <div class="mt-5 text-center">

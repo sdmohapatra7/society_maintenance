@@ -24,3 +24,7 @@ class Config:
 
     # Scheduler
     SCHEDULER_API_ENABLED = True
+
+    # Google Auth Settings
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")

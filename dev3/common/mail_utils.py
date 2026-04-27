@@ -18,3 +18,19 @@ def send_invoice_email(recipient_email, subject, html_body, pdf_attachment=None)
     except Exception as e:
         print(f"Error sending email: {e}")
         return False
+
+def send_event_email(recipient_emails, subject, html_body):
+    if not recipient_emails:
+        return True
+    msg = Message(
+        subject,
+        bcc=recipient_emails,  # Use BCC so residents don't see each other's emails
+        html=html_body,
+        sender=current_app.config.get('MAIL_DEFAULT_SENDER')
+    )
+    try:
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f"Error sending event email: {e}")
+        return False

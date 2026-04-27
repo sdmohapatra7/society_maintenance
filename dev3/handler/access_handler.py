@@ -11,8 +11,14 @@ def index():
     if current_user.role != 'admin':
         return "Unauthorized", 403
     
-    # Get all unique roles from permissions and users table
-    q_roles = text("SELECT DISTINCT role FROM role_permissions UNION SELECT DISTINCT role FROM users")
+    # Get all unique roles from roles table, permissions, and users
+    q_roles = text("""
+        SELECT name FROM roles 
+        UNION 
+        SELECT DISTINCT role FROM role_permissions 
+        UNION 
+        SELECT DISTINCT role FROM users
+    """)
     roles = [row[0] for row in db.session.execute(q_roles).fetchall() if row[0]]
     
     # Get permissions for all roles
@@ -26,11 +32,21 @@ def index():
             role_perms[p.role] = {}
         role_perms[p.role][p.feature_name] = p.can_access
         
-    # Get unique features from permissions table
+    # Master list of ALL features in the application
+    # This ensures new features always appear in the Access Management UI
+    master_features = [
+        'societies', 'houses', 'users', 'billing', 'expenses', 
+        'complaints', 'reports', 'accounting', 'events', 
+        'visitors', 'vehicles'
+    ]
+    
+    # We still fetch from DB in case there are custom features, and merge them
     q_features = text("SELECT DISTINCT feature_name FROM role_permissions")
-    features = [row[0] for row in db.session.execute(q_features).fetchall() if row[0]]
-    if not features:
-        features = ['societies', 'houses', 'users', 'billing', 'expenses', 'complaints', 'reports', 'accounting']
+    db_features = [row[0] for row in db.session.execute(q_features).fetchall() if row[0]]
+    
+    # Combine and deduplicate
+    features = list(set(master_features + db_features))
+    features.sort() # Sort alphabetically for a cleaner UI
     
     return render_template('access_management.html', 
                            roles=roles, 
