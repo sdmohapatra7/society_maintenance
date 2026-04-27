@@ -45,6 +45,11 @@
                         <i class="fas fa-check"></i>
                     </button>
                     {% endif %}
+                    {% if current_user.role == 'admin' %}
+                    <button onclick="deleteBill({{ b.id }})" class="btn" style="padding: 0.4rem 0.8rem; background: #ef4444; color: white;" title="Delete Bill">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    {% endif %}
                 </td>
             </tr>
             {% else %}

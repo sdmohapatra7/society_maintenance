@@ -51,8 +51,8 @@
                             </td>
                             {% if current_user.role == 'admin' %}
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-light text-primary me-1" onclick="openEditVehicleModal({{ v.id }}, '{{ v.license_plate|replace('\'', '\\\'') }}', '{{ v.make_model|replace('\'', '\\\'') }}', '{{ v.vehicle_type }}', {{ v.house_id or 'null' }}, '{{ v.parking_slot|replace('\'', '\\\'') }}')" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-light text-danger" onclick="deleteVehicle({{ v.id }})" title="Remove"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-sm btn-light text-primary me-1" onclick="Vehicles.openEditModal({{ v.id }}, '{{ v.license_plate }}', '{{ v.make_model|replace('\'', '\\\'') }}', '{{ v.vehicle_type }}', {{ v.house_id or 'null' }}, '{{ v.parking_slot or '' }}')" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-light text-danger" onclick="Vehicles.delete({{ v.id }})" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                             {% endif %}
                         </tr>
@@ -118,7 +118,7 @@
             </div>
             <div class="modal-footer border-top px-4 py-3">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary px-4" onclick="submitVehicle()">Register</button>
+                <button class="btn btn-primary" onclick="Vehicles.submit()">Register</button>
             </div>
         </div>
     </div>
@@ -127,76 +127,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    function submitVehicle() {
-        if (!SocietyPro.validateForm('#addVehicleForm')) {
-            return;
-        }
-        
-        const data = {
-            license_plate: $('input[name="license_plate"]').val().toUpperCase(),
-            make_model: $('input[name="make_model"]').val(),
-            vehicle_type: $('select[name="vehicle_type"]').val(),
-            house_id: $('select[name="house_id"]').val(),
-            parking_slot: $('input[name="parking_slot"]').val()
-        };
-        
-        SocietyPro.api('/vehicles/add', 'POST', data, () => {
-            SocietyPro.alert("Vehicle registered successfully!", "success");
-            setTimeout(() => location.reload(), 800);
-        });
-    }
-
-    function openEditVehicleModal(id, license, make, type, houseId, slot) {
-        $('#vehicleId').val(id);
-        $('input[name="license_plate"]').val(license);
-        $('input[name="make_model"]').val(make);
-        $('select[name="vehicle_type"]').val(type);
-        $('select[name="house_id"]').val(houseId);
-        $('input[name="parking_slot"]').val(slot);
-        
-        $('.modal-title').text('Edit Vehicle');
-        $('#addVehicleModal .btn-primary').text('Save Changes').attr('onclick', 'updateVehicle()');
-        
-        var modal = new bootstrap.Modal(document.getElementById('addVehicleModal'));
-        modal.show();
-    }
-    
-    $('#addVehicleModal').on('hidden.bs.modal', function () {
-        $('#vehicleId').val('');
-        $('#addVehicleForm')[0].reset();
-        $('.modal-title').text('Register Vehicle');
-        $('#addVehicleModal .btn-primary').text('Register').attr('onclick', 'submitVehicle()');
-        $('#addVehicleForm').removeClass('was-validated');
-    });
-
-    function updateVehicle() {
-        if (!SocietyPro.validateForm('#addVehicleForm')) {
-            return;
-        }
-        
-        const id = $('#vehicleId').val();
-        const data = {
-            license_plate: $('input[name="license_plate"]').val().toUpperCase(),
-            make_model: $('input[name="make_model"]').val(),
-            vehicle_type: $('select[name="vehicle_type"]').val(),
-            house_id: $('select[name="house_id"]').val(),
-            parking_slot: $('input[name="parking_slot"]').val()
-        };
-        
-        SocietyPro.api(`/vehicles/edit/${id}`, 'POST', data, () => {
-            SocietyPro.alert("Vehicle updated successfully!", "success");
-            setTimeout(() => location.reload(), 800);
-        });
-    }
-
-    function deleteVehicle(id) {
-        SocietyPro.confirm('Remove Vehicle', 'Are you sure you want to remove this vehicle record?', () => {
-            SocietyPro.api(`/vehicles/delete/${id}`, 'POST', {}, () => {
-                SocietyPro.alert("Vehicle removed successfully!", "success");
-                setTimeout(() => location.reload(), 800);
-            });
-        });
-    }
-</script>
+<script src="{{ url_for('static', filename='js/vehicles.js') }}"></script>
 {% endblock %}

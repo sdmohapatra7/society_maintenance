@@ -67,7 +67,8 @@ const Billing = {
         SocietyPro.api('/billing/api/' + billId, 'GET', null, (data) => {
             $('#editBillId').val(data.id);
             let month = data.bill_month;
-            if (month && month.length > 7) {
+            if (month && month.length >= 7) {
+                // Ensure format is exactly YYYY-MM
                 month = month.substring(0, 7);
             }
             $('#editBillMonth').val(month);
@@ -100,7 +101,19 @@ const Billing = {
             SocietyPro.alert('Bill updated successfully!', 'success');
             setTimeout(() => location.reload(), 1000);
         });
+    },
+
+    delete: function(billId) {
+        SocietyPro.confirm('Delete Bill', 'Are you sure you want to delete this billing record?', () => {
+            SocietyPro.api('/billing/api/' + billId, 'DELETE', null, () => {
+                SocietyPro.alert('Bill deleted successfully!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            });
+        });
     }
 };
 
-$(document).ready(() => Billing.init());
+$(document).ready(() => {
+    Billing.init();
+    window.deleteBill = Billing.delete.bind(Billing);
+});

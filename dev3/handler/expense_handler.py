@@ -47,3 +47,46 @@ def create():
 
     res = ExpenseBL.create(title, amount, category, date, description, receipt_url)
     return jsonify(dict(res._mapping)), 201
+
+@expense_bp.route('/api/<int:id>', methods=['GET'])
+@login_required
+def get_one(id):
+    from dev3.common import db
+    from sqlalchemy import text
+    q = text("SELECT * FROM expenses WHERE id = :id")
+    res = db.session.execute(q, {"id": id}).fetchone()
+    if not res:
+        return jsonify({"error": "Not found"}), 404
+    return jsonify(dict(res._mapping))
+
+@expense_bp.route('/api/<int:id>', methods=['PUT'])
+@login_required
+def update(id):
+    if current_user.role not in ['admin', 'staff']:
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    title = request.form.get('title')
+    amount = request.form.get('amount')
+    category = request.form.get('category')
+    date = request.form.get('expense_date')
+    description = request.form.get('description')
+    
+    receipt_url = None
+    if 'receipt' in request.files:
+        file = request.files['receipt']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            upload_path = os.path.join(current_app.root_path, 'ui', 'uploads', 'expenses', filename)
+            file.save(upload_path)
+            receipt_url = f"/ui/uploads/expenses/{filename}"
+
+    ExpenseBL.update(id, title, amount, category, date, description, receipt_url)
+    return jsonify({"success": True})
+
+@expense_bp.route('/api/<int:id>', methods=['DELETE'])
+@login_required
+def delete(id):
+    if current_user.role not in ['admin', 'staff']:
+        return jsonify({"error": "Unauthorized"}), 403
+    ExpenseBL.delete(id)
+    return jsonify({"success": True})

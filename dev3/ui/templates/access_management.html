@@ -52,15 +52,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-function updateRoleAccess(role, featureName, canAccess) {
-    SocietyPro.api('/access/update', 'POST', {
-        role: role,
-        feature_name: featureName,
-        can_access: canAccess
-    }, function(res) {
-        console.log('Role access updated');
-    });
-}
-</script>
+<script src="{{ url_for('static', filename='js/access.js') }}"></script>
 {% endblock %}

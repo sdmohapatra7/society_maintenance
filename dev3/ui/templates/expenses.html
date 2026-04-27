@@ -15,6 +15,7 @@
                 <th style="padding: 1rem;">Category</th>
                 <th style="padding: 1rem;">Amount</th>
                 <th style="padding: 1rem;">Receipt</th>
+                <th style="padding: 1rem;" class="text-end">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,17 +30,25 @@
                 <td style="padding: 1rem;"><strong>${{ "{:,.2f}".format(e.amount) }}</strong></td>
                 <td style="padding: 1rem;">
                     {% if e.receipt_url %}
-                    <a href="{{ e.receipt_url }}" target="_blank" class="btn" style="padding: 0.4rem 0.8rem; background: var(--text-muted);">
-                        <i class="fas fa-paperclip"></i> View
+                    <a href="{{ e.receipt_url }}" target="_blank" class="btn btn-sm btn-light" title="View Receipt">
+                        <i class="fas fa-paperclip"></i>
                     </a>
                     {% else %}
-                    <span style="color: #ccc;">No File</span>
+                    <span style="color: #ccc;">-</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 1rem;" class="text-end">
+                    {% if current_user.role in ['admin', 'staff'] %}
+                    <button class="btn btn-sm btn-light text-primary me-1" onclick="Expenses.edit({{ e.id }})" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-light text-danger" onclick="Expenses.delete({{ e.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                    {% else %}
+                    <span class="text-muted small">Locked</span>
                     {% endif %}
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                <td colspan="6" style="padding: 3rem; text-align: center; color: var(--text-muted);">
                     <i class="fas fa-folder-open" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
                     No data found
                 </td>
@@ -59,6 +68,7 @@
             </div>
             <form id="expenseForm" class="needs-validation" novalidate enctype="multipart/form-data">
                 <div class="modal-body">
+                    <input type="hidden" name="id" id="expenseId">
                     <div class="mb-3">
                         <label class="form-label">Title</label>
                         <input type="text" class="form-control" name="title" required>

@@ -114,6 +114,14 @@ def update_bill(bill_id):
     db.session.commit()
     return jsonify({"success": True})
 
+@maintenance_bp.route('/api/<int:bill_id>', methods=['DELETE'])
+def delete_bill(bill_id):
+    from dev3.common import db
+    from sqlalchemy import text
+    db.session.execute(text("DELETE FROM maintenance_bills WHERE id = :id"), {"id": bill_id})
+    db.session.commit()
+    return jsonify({"success": True})
+
 @maintenance_bp.route('/api/create-order/<int:bill_id>', methods=['POST'])
 def create_order(bill_id):
     from dev3.common import db

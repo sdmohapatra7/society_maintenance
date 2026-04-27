@@ -42,8 +42,8 @@
                             <td class="text-muted small text-truncate" style="max-width: 250px;" title="{{ event.description }}">{{ event.description }}</td>
                             {% if current_user.role == 'admin' %}
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-light text-primary me-1" onclick="openEditEventModal({{ event.id }}, '{{ event.title|replace('\'', '\\\'') }}', '{{ event.event_date_iso }}', '{{ event.location|replace('\'', '\\\'') }}', '{{ event.description|replace('\'', '\\\'')|replace('\n', '\\n') }}')" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-light text-danger" onclick="deleteEvent({{ event.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-sm btn-light text-primary me-1" onclick="Events.openEditModal({{ event.id }}, '{{ event.title|replace('\'', '\\\'') }}', '{{ event.event_date_iso }}', '{{ event.location|replace('\'', '\\\'') }}', '{{ event.description|replace('\'', '\\\'')|replace('\n', '\\n') }}')" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-light text-danger" onclick="Events.delete({{ event.id }})" title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                             {% endif %}
                         </tr>
@@ -96,7 +96,7 @@
             </div>
             <div class="modal-footer border-top px-4 py-3">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary px-4" onclick="submitEvent()">Create</button>
+                <button type="button" class="btn btn-primary px-4" onclick="Events.submit()">Create</button>
             </div>
         </div>
     </div>
@@ -105,71 +105,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-    function submitEvent() {
-        if (!SocietyPro.validateForm('#addEventForm')) {
-            return;
-        }
-        
-        const data = {
-            title: $('input[name="title"]').val(),
-            event_date: $('input[name="event_date"]').val(),
-            location: $('input[name="location"]').val(),
-            description: $('textarea[name="description"]').val()
-        };
-        
-        SocietyPro.api('/events/add', 'POST', data, () => {
-            SocietyPro.alert("Event created successfully!", "success");
-            setTimeout(() => location.reload(), 800);
-        });
-    }
-
-    function openEditEventModal(id, title, date, location, description) {
-        $('#eventId').val(id);
-        $('input[name="title"]').val(title);
-        $('input[name="event_date"]').val(date);
-        $('input[name="location"]').val(location);
-        $('textarea[name="description"]').val(description);
-        
-        $('.modal-title').text('Edit Event');
-        $('#addEventModal .btn-primary').text('Save Changes').attr('onclick', 'updateEvent()');
-        
-        var modal = new bootstrap.Modal(document.getElementById('addEventModal'));
-        modal.show();
-    }
-    
-    // Reset modal on close so 'Create' works correctly next time
-    $('#addEventModal').on('hidden.bs.modal', function () {
-        $('#eventId').val('');
-        $('#addEventForm')[0].reset();
-        $('.modal-title').text('Create Event');
-        $('#addEventModal .btn-primary').text('Create').attr('onclick', 'submitEvent()');
-        $('#addEventForm').removeClass('was-validated');
-    });
-
-    function updateEvent() {
-        if (!SocietyPro.validateForm('#addEventForm')) {
-            return;
-        }
-        
-        const id = $('#eventId').val();
-        const data = {
-            title: $('input[name="title"]').val(),
-            event_date: $('input[name="event_date"]').val(),
-            location: $('input[name="location"]').val(),
-            description: $('textarea[name="description"]').val()
-        };
-        
-        SocietyPro.api(`/events/edit/${id}`, 'POST', data, () => {
-            SocietyPro.alert("Event updated successfully!", "success");
-            setTimeout(() => location.reload(), 800);
-        });
-    }
-
-    function deleteEvent(id) {
-        SocietyPro.confirm('Delete Event', 'Are you sure you want to delete this event?', () => {
-            SocietyPro.api(`/events/delete/${id}`, 'POST', {}, () => location.reload());
-        });
-    }
-</script>
+<script src="{{ url_for('static', filename='js/events.js') }}"></script>
 {% endblock %}

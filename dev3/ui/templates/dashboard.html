@@ -86,108 +86,11 @@
 {% block scripts %}
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 <script>
-    // Global Chart.js Config
-    Chart.defaults.font.family = "'Outfit', sans-serif";
-    Chart.defaults.color = '#64748b';
-
-    // 1. Performance Chart (Line: Revenue vs Expenses)
-    const perfCtx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(perfCtx, {
-        type: 'line',
-        data: {
-            labels: {{ stats.comparison | map(attribute='month') | list | tojson }},
-            datasets: [{
-                label: 'Revenue',
-                data: {{ stats.comparison | map(attribute='revenue') | list | tojson }},
-                borderColor: '#4f46e5',
-                backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                fill: true,
-                tension: 0.4,
-                borderWidth: 3
-            }, {
-                label: 'Expenses',
-                data: {{ stats.comparison | map(attribute='expenses') | list | tojson }},
-                borderColor: '#ef4444',
-                borderDash: [5, 5],
-                tension: 0.4,
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'top', align: 'end' } },
-            scales: {
-                y: { beginAtZero: true, grid: { display: false } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // 2. Complaints Chart (Pie)
-    const compCtx = document.getElementById('complaintsChart').getContext('2d');
-    new Chart(compCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {{ stats.complaints | map(attribute='status') | list | tojson }},
-            datasets: [{
-                data: {{ stats.complaints | map(attribute='count') | list | tojson }},
-                backgroundColor: ['#f59e0b', '#10b981', '#3b82f6'],
-                borderWidth: 0,
-                cutout: '70%'
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
-
-    // 3. Collection Chart (Bar: Target vs Actual)
-    const collCtx = document.getElementById('collectionChart').getContext('2d');
-    new Chart(collCtx, {
-        type: 'bar',
-        data: {
-            labels: {{ stats.revenue_trends | map(attribute='month') | list | tojson }},
-            datasets: [{
-                label: 'Collected',
-                data: {{ stats.revenue_trends | map(attribute='actual') | list | tojson }},
-                backgroundColor: '#10b981',
-                borderRadius: 6
-            }, {
-                label: 'Target',
-                data: {{ stats.revenue_trends | map(attribute='target') | list | tojson }},
-                backgroundColor: '#e2e8f0',
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'top', align: 'end' } },
-            scales: {
-                y: { beginAtZero: true, grid: { display: false } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // 4. Society Revenue Chart (Doughnut)
-    const socCtx = document.getElementById('societyRevenueChart').getContext('2d');
-    new Chart(socCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {{ stats.summary | map(attribute='name') | list | tojson }},
-            datasets: [{
-                data: {{ stats.summary | map(attribute='total_collected') | list | tojson }},
-                backgroundColor: ['#4f46e5', '#8b5cf6', '#ec4899', '#f97316'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'right' } }
-        }
+    $(document).ready(() => {
+        const statsData = {{ stats | tojson }};
+        Dashboard.init(statsData);
     });
 </script>
 {% endblock %}
