@@ -66,11 +66,11 @@
                 <li><a href="/events/" class="{% if request.endpoint and request.endpoint.startswith('events.') %}active{% endif %}"><i class="fas fa-calendar-alt"></i> Events & Notices</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('visitors') or current_user.role in ['admin', 'staff', 'resident'] %}
+                {% if current_user.has_feature('visitors') or current_user.role in ['admin', 'staff', 'resident', 'security_guard'] %}
                 <li><a href="/visitors/" class="{% if request.endpoint and request.endpoint.startswith('visitors.') %}active{% endif %}"><i class="fas fa-id-badge"></i> Visitors</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('vehicles') or current_user.role in ['admin', 'resident'] %}
+                {% if current_user.has_feature('vehicles') or current_user.role in ['admin', 'resident', 'security_guard'] %}
                 <li><a href="/vehicles/" class="{% if request.endpoint and request.endpoint.startswith('vehicles.') %}active{% endif %}"><i class="fas fa-car"></i> Vehicles</a></li>
                 {% endif %}
 
