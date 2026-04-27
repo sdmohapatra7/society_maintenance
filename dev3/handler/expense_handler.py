@@ -14,7 +14,7 @@ def allowed_file(filename):
 @expense_bp.route('/')
 @login_required
 def index():
-    if current_user.role not in ['admin', 'staff', 'accountant']:
+    if not current_user.has_feature('expenses'):
         return "Unauthorized", 403
     
     from dev3.common import db

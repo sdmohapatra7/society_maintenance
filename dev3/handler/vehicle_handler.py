@@ -8,7 +8,7 @@ vehicle_bp = Blueprint('vehicles', __name__)
 @vehicle_bp.route('/')
 @login_required
 def index():
-    if not current_user.has_feature('vehicles') and current_user.role not in ['resident', 'security_guard']:
+    if not current_user.has_feature('vehicles'):
         return "Unauthorized", 403
         
     q_houses = text("SELECT id, house_no, wing FROM houses ORDER BY wing, house_no")

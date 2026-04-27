@@ -9,7 +9,7 @@ event_bp = Blueprint('events', __name__)
 @event_bp.route('/')
 @login_required
 def index():
-    if current_user.role != 'admin' and not current_user.has_feature('events'):
+    if not current_user.has_feature('events'):
         return "Unauthorized", 403
         
     q = text("SELECT id, title, description, TO_CHAR(event_date, 'YYYY-MM-DD HH24:MI') as event_date_str, TO_CHAR(event_date, 'YYYY-MM-DD\"T\"HH24:MI') as event_date_iso, location FROM events ORDER BY event_date DESC")

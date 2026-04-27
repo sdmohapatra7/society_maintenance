@@ -8,7 +8,7 @@ visitor_bp = Blueprint('visitors', __name__)
 @visitor_bp.route('/')
 @login_required
 def index():
-    if not current_user.has_feature('visitors') and current_user.role not in ['staff', 'resident', 'security_guard']:
+    if not current_user.has_feature('visitors'):
         return "Unauthorized", 403
         
     # Get houses for dropdown

@@ -16,6 +16,8 @@ maintenance_bp = Blueprint('maintenance', __name__)
 @maintenance_bp.route('/')
 @login_required
 def index():
+    if not current_user.has_feature('billing'):
+        return "Unauthorized", 403
     # List all bills or user's bills
     from dev3.common import db
     from sqlalchemy import text

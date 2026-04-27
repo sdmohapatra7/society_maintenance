@@ -31,18 +31,18 @@
                 {% endif %}
                 
                 {% if current_user.has_feature('societies') %}
-                <li><a href="/societies/" class="{% if request.endpoint and request.endpoint.startswith('societies.') %}active{% endif %}"><i class="fas fa-city"></i> Societies</a></li>
+                <li><a href="/societies/" class="{% if request.endpoint and (request.endpoint.startswith('society.') or request.endpoint.startswith('house.')) %}active{% endif %}"><i class="fas fa-city"></i> Societies</a></li>
                 {% endif %}
                 
                 {% if current_user.has_feature('users') %}
-                <li><a href="/users/" class="{% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}"><i class="fas fa-users-gear"></i> Users</a></li>
+                <li><a href="/users/" class="{% if request.endpoint and request.endpoint.startswith('user.') %}active{% endif %}"><i class="fas fa-users-gear"></i> Users</a></li>
                 {% endif %}
 
                 {% if current_user.role == 'admin' %}
                 <li><a href="/access/" class="{% if request.endpoint and request.endpoint.startswith('access.') %}active{% endif %}"><i class="fas fa-user-shield"></i> Access Management</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('accounting') or current_user.role in ['admin', 'accountant'] %}
+                {% if current_user.has_feature('accounting') %}
                 <li><a href="/accounting/" class="{% if request.endpoint and request.endpoint.startswith('accounting.') %}active{% endif %}"><i class="fas fa-calculator"></i> Accounting</a></li>
                 {% endif %}
 
@@ -51,26 +51,26 @@
                 {% endif %}
                 
                 {% if current_user.has_feature('expenses') %}
-                <li><a href="/expenses/" class="{% if request.endpoint and request.endpoint.startswith('expenses.') %}active{% endif %}"><i class="fas fa-wallet"></i> Expenses</a></li>
+                <li><a href="/expenses/" class="{% if request.endpoint and request.endpoint.startswith('expense.') %}active{% endif %}"><i class="fas fa-wallet"></i> Expenses</a></li>
                 {% endif %}
 
                 {% if current_user.has_feature('reports') %}
-                <li><a href="/reports/" class="{% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}"><i class="fas fa-file-contract"></i> Reports</a></li>
+                <li><a href="/reports/" class="{% if request.endpoint and request.endpoint.startswith('report.') %}active{% endif %}"><i class="fas fa-file-contract"></i> Reports</a></li>
                 {% endif %}
 
                 {% if current_user.has_feature('complaints') %}
-                <li><a href="/complaints/" class="{% if request.endpoint and request.endpoint.startswith('complaints.') %}active{% endif %}"><i class="fas fa-circle-exclamation"></i> Complaints</a></li>
+                <li><a href="/complaints/" class="{% if request.endpoint and request.endpoint.startswith('complaint.') %}active{% endif %}"><i class="fas fa-circle-exclamation"></i> Complaints</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('events') or current_user.role == 'admin' %}
-                <li><a href="/events/" class="{% if request.endpoint and request.endpoint.startswith('events.') %}active{% endif %}"><i class="fas fa-calendar-alt"></i> Events & Notices</a></li>
+                {% if current_user.has_feature('events') %}
+                <li><a href="/events/" class="{% if request.endpoint and request.endpoint.startswith('event.') %}active{% endif %}"><i class="fas fa-calendar-alt"></i> Events & Notices</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('visitors') or current_user.role in ['admin', 'staff', 'resident', 'security_guard'] %}
+                {% if current_user.has_feature('visitors') %}
                 <li><a href="/visitors/" class="{% if request.endpoint and request.endpoint.startswith('visitors.') %}active{% endif %}"><i class="fas fa-id-badge"></i> Visitors</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('vehicles') or current_user.role in ['admin', 'resident', 'security_guard'] %}
+                {% if current_user.has_feature('vehicles') %}
                 <li><a href="/vehicles/" class="{% if request.endpoint and request.endpoint.startswith('vehicles.') %}active{% endif %}"><i class="fas fa-car"></i> Vehicles</a></li>
                 {% endif %}
 

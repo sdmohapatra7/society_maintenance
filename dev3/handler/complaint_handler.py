@@ -7,6 +7,8 @@ complaint_bp = Blueprint('complaint', __name__)
 @complaint_bp.route('/')
 @login_required
 def index():
+    if not current_user.has_feature('complaints'):
+        return "Unauthorized", 403
     if current_user.role in ['admin', 'staff']:
         from dev3.common import db
         from sqlalchemy import text
