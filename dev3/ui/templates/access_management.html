@@ -33,8 +33,7 @@
                             {% endif %}
                             <input class="form-check-input shadow-sm border-secondary" type="checkbox" style="cursor: pointer; width: 1.4em; height: 1.4em;"
                                    onchange="updateRoleAccess('{{ role }}', '{{ f }}', this.checked)"
-                                   {{ checked }} 
-                                   {% if role == 'admin' and f == 'users' %}disabled{% endif %}>
+                                   {{ checked }}>
                         </td>
                         {% endfor %}
                     </tr>

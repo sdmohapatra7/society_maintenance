@@ -35,9 +35,9 @@ def index():
     # Master list of ALL features in the application
     # This ensures new features always appear in the Access Management UI
     master_features = [
-        'societies', 'houses', 'users', 'billing', 'expenses', 
+        'dashboard', 'societies', 'houses', 'users', 'billing', 'expenses', 
         'complaints', 'reports', 'accounting', 'events', 
-        'visitors', 'vehicles'
+        'visitors', 'vehicles', 'settings', 'access'
     ]
     
     # We still fetch from DB in case there are custom features, and merge them
