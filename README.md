@@ -87,11 +87,16 @@ society_maintenance/
    ```
 5. **Run the Application:**
    ```bash
-   python run.py
+   python run.py or 
+   .\venv\Scripts\python run.py
    ```
    Access the app at `http://127.0.0.1:5000`
 
 ---
+6. Activate the virtual environment
+.\venv\Scripts\activate
+7.Start the server
+python run.py
 
 ## 👨‍💻 Contributing
 This project is architected for scalability. To add a new feature:
