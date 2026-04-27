@@ -27,7 +27,7 @@
         <nav style="flex: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">
             <ul>
                 {% if current_user.has_feature('dashboard') %}
-                <li><a href="/" class="{% if request.endpoint and request.endpoint == 'main.index' %}active{% endif %}"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="/" class="{% if request.endpoint and request.endpoint == 'main.dashboard' %}active{% endif %}"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 {% endif %}
                 
                 {% if current_user.has_feature('societies') %}
