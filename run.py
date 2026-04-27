@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file BEFORE creating app
+
 from dev3 import create_app
 from dev3.common import Config
 
