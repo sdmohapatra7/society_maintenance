@@ -67,4 +67,22 @@ $(document).ready(() => {
         $('#addVehicleModal .btn-primary').text('Register').attr('onclick', 'Vehicles.submit()');
         $('#addVehicleForm').removeClass('was-validated');
     });
+
+    $(document).on('click', '.edit-vehicle-btn', function() {
+        const btn = $(this);
+        Vehicles.openEditModal(
+            btn.data('id'),
+            btn.data('license'),
+            btn.data('make'),
+            btn.data('type'),
+            btn.data('house'),
+            btn.data('slot')
+        );
+    });
+
+    $(document).on('click', '.delete-vehicle-btn', function() {
+        const id = $(this).data('id');
+        Vehicles.delete(id);
+    });
 });
+

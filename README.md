@@ -7,30 +7,42 @@
 ## 🚀 Key Features
 
 ### 🔐 Advanced Security & Access Control
+![Access Management Interface](assets/screenshots/access_management_1777286288501.png)
 - **Role-Based Access Control (RBAC):** Dedicated interfaces for Admins, Staff, Accountants, and Residents.
 - **Dynamic Feature Management:** Admins can dynamically enable or disable specific modules (Billing, Complaints, Societies, etc.) for entire roles via a real-time dashboard.
 
 ### 📊 Executive Analytics & Reporting
+![Main Dashboard Analytics](assets/screenshots/dashboard_1777286037824.png)
 - **Interactive Dashboards:** Real-time financial trends using Chart.js, including Revenue vs. Expenses and Collection Efficiency.
 - **Advanced Reporting:** High-performance CSV export engine with filtering by Society, Date Range (including FY presets), and Payment Status.
+![Advanced Reporting Engine](assets/screenshots/reports_retry_1777286369236.png)
 - **Accounting Hub:** Centralized financial overview tracking Net Balance, Total Receivables, and category-wise expenditure.
+![Accounting Hub Overview](assets/screenshots/accounting_1777286243939.png)
 
 ### 💳 Financial & Billing Management
 - **Automated Billing:** Generate maintenance bills based on fixed charges and area-based rates.
+![Billing Management](assets/screenshots/billing_1777286223404.png)
 - **Razorpay Integration:** Secure online payment gateway with automated verification and mock-mode for testing.
 - **Professional PDF Invoices:** Automated generation of professional invoices with "PAID" verification stamps and payment dates.
 - **Expense Tracking:** Comprehensive log of society expenditures with dynamic category management.
+![Expense Management](assets/screenshots/expenses_1777286231556.png)
 
 ### 🏠 Property & Master Data Management
 - **Settings Module:** Complete control over global app settings (App Name, Currency) and Master Data (Expense Categories, House Types).
+![Settings & Master Data](assets/screenshots/settings_retry_1777286359608.png)
 - **Society Hierarchy:** Manage multiple societies with their specific addresses and registration details.
+![Society Management](assets/screenshots/societies_1777286049005.png)
 - **House Management:** Track wings, house numbers, area square footage, and resident contact details.
+![House Management](assets/screenshots/houses_society_1_1777286377342.png)
 - **Vehicle & Parking Management:** Track resident vehicles (cars/bikes) and strictly manage parking slot allocations.
+![Vehicle & Parking Management](assets/screenshots/vehicles_1777286169099.png)
 
 ### 🛠️ Resident Services & Community
 - **Complaint Helpdesk:** Residents can file complaints, upload documents, and track resolution status in real-time.
 - **Events & Notices:** Broadcast society gatherings, meetings, and important announcements with date/time tracking.
+![Events & Notices](assets/screenshots/events_1777286280854.png)
 - **Visitor Security Logs:** Digital register for tracking the entry and exit of guests, delivery agents, and staff.
+![Visitor Logs](assets/screenshots/visitors_1777286184728.png)
 - **Auto-Onboarding:** Automated user registration and welcome invitation emails when a new house is registered.
 
 ### 🎨 Premium User Experience

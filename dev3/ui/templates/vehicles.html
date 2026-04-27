@@ -51,8 +51,17 @@
                             </td>
                             {% if current_user.role == 'admin' %}
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-light text-primary me-1" onclick="Vehicles.openEditModal({{ v.id }}, '{{ v.license_plate }}', '{{ v.make_model|replace('\'', '\\\'') }}', '{{ v.vehicle_type }}', {{ v.house_id or 'null' }}, '{{ v.parking_slot or '' }}')" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-light text-danger" onclick="Vehicles.delete({{ v.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-sm btn-light text-primary me-1 edit-vehicle-btn" 
+                                    data-id="{{ v.id }}" 
+                                    data-license="{{ v.license_plate or '' }}" 
+                                    data-make="{{ v.make_model or '' }}" 
+                                    data-type="{{ v.vehicle_type or 'car' }}" 
+                                    data-house="{{ v.house_id or '' }}" 
+                                    data-slot="{{ v.parking_slot or '' }}"
+                                    title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-light text-danger delete-vehicle-btn" 
+                                    data-id="{{ v.id }}" 
+                                    title="Delete"><i class="fas fa-trash"></i></button>
                             </td>
                             {% endif %}
                         </tr>
