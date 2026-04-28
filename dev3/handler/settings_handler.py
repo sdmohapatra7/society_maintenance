@@ -86,3 +86,20 @@ def delete_role(id):
     db.session.commit()
     return jsonify({"success": True})
 
+@settings_bp.route('/logs')
+@login_required
+def view_logs():
+    if current_user.role != 'admin':
+        return "Unauthorized", 403
+    
+    import os
+    log_path = os.path.join(os.getcwd(), 'app.log')
+    if not os.path.exists(log_path):
+        return "No log file found."
+        
+    with open(log_path, 'r') as f:
+        # Get last 100 lines
+        lines = f.readlines()
+        content = "".join(lines[-100:])
+        return f"<pre>{content}</pre>"
+

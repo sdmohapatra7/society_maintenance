@@ -14,6 +14,10 @@ login_manager = LoginManager()
 oauth = OAuth()
 
 def create_app():
+    import logging
+    logging.basicConfig(filename='app.log', level=logging.INFO, 
+                        format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+    
     app = Flask(__name__, 
                 template_folder='ui/templates', 
                 static_folder='ui/static')
@@ -99,5 +103,10 @@ def create_app():
         except:
             settings = {}
         return dict(app_settings=settings)
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        from flask import render_template
+        return render_template('404.html'), 404
 
     return app

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, logout_user, login_required
 from dev3.bl.user_bl import UserBL
 from dev3.common.auth_utils import User
@@ -124,3 +124,90 @@ def authorize_google():
     else:
         flash(f"User with email {email} not found in the system. Please contact the administrator.", "error")
         return redirect(url_for('auth.login'))
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        from dev3.common import db
+        from sqlalchemy import text
+        import secrets
+        from datetime import datetime, timedelta
+        
+        q = text("SELECT id FROM users WHERE email = :email")
+        user = db.session.execute(q, {"email": email}).fetchone()
+        
+        if user:
+            token = secrets.token_urlsafe(32)
+            expires = datetime.now() + timedelta(hours=1)
+            
+            q_token = text("INSERT INTO password_resets (user_id, token, expires_at) VALUES (:u_id, :token, :expires)")
+            db.session.execute(q_token, {"u_id": user.id, "token": token, "expires": expires})
+            db.session.commit()
+            
+            from dev3.common.mail_utils import send_reset_email
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+            send_reset_email(email, reset_url)
+            
+            flash("Reset link sent! Please check your email.", "success")
+            return redirect(url_for('auth.login'))
+        else:
+            flash("No account found with that email address.", "error")
+            
+    return render_template('forgot_password.html')
+
+@auth_bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    token = request.args.get('token')
+    if not token:
+        return "Missing token", 400
+        
+    from dev3.common import db
+    from sqlalchemy import text
+    from datetime import datetime
+    
+    q = text("SELECT * FROM password_resets WHERE token = :token AND used = FALSE AND expires_at > :now")
+    res_rec = db.session.execute(q, {"token": token, "now": datetime.now()}).fetchone()
+    
+    if not res_rec:
+        return "Invalid or expired token", 400
+        
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if new_password != confirm_password:
+            flash("Passwords do not match", "error")
+            return render_template('reset_password.html', token=token)
+            
+        # Update user password
+        from dev3.bl.user_bl import UserBL
+        UserBL.change_password(res_rec.user_id, new_password)
+        
+        # Mark token as used
+        db.session.execute(text("UPDATE password_resets SET used = TRUE WHERE id = :id"), {"id": res_rec.id})
+        db.session.commit()
+        
+        flash("Password reset successful! You can now login.", "success")
+        return redirect(url_for('auth.login'))
+        
+    return render_template('reset_password.html', token=token)
+
+@auth_bp.route('/contact-admin', methods=['POST'])
+def contact_admin():
+    data = request.json
+    message = data.get('message')
+    user_email = data.get('email')
+    user_name = data.get('name', 'Anonymous')
+    
+    from dev3.common import db
+    from sqlalchemy import text
+    
+    # Get Admin Email from settings
+    q = text("SELECT value FROM app_settings WHERE key = 'admin_email'")
+    admin_email = db.session.execute(q).scalar() or "admin@society.com"
+    
+    from dev3.common.mail_utils import send_contact_email
+    user_info = {"username": user_name, "email": user_email}
+    send_contact_email(admin_email, user_info, message)
+    
+    return jsonify({"success": True})
