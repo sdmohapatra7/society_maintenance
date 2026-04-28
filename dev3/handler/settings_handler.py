@@ -26,7 +26,7 @@ def index():
     roles = db.session.execute(text("SELECT * FROM roles ORDER BY name")).fetchall()
         
     return render_template('settings.html', 
-                           app_settings=[dict(r._mapping) for r in app_settings], 
+                           settings_list=[dict(r._mapping) for r in app_settings], 
                            master_data=master_data,
                            roles=[dict(r._mapping) for r in roles])
 

@@ -11,28 +11,28 @@
     <div class="col-md-3">
         <div class="card border-0 shadow-sm p-4 h-100" style="border-left: 5px solid #10b981 !important;">
             <div class="text-muted small fw-bold text-uppercase mb-2">Total Revenue</div>
-            <div class="h2 mb-0 text-success fw-bold">${{ "{:,.2f}".format(summary.revenue) }}</div>
+            <div class="h2 mb-0 text-success fw-bold">{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(summary.revenue) }}</div>
             <div class="small mt-2 text-muted">From Paid Bills</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm p-4 h-100" style="border-left: 5px solid #ef4444 !important;">
             <div class="text-muted small fw-bold text-uppercase mb-2">Total Expenses</div>
-            <div class="h2 mb-0 text-danger fw-bold">${{ "{:,.2f}".format(summary.expenses) }}</div>
+            <div class="h2 mb-0 text-danger fw-bold">{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(summary.expenses) }}</div>
             <div class="small mt-2 text-muted">Operating Costs</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm p-4 h-100" style="border-left: 5px solid #3b82f6 !important;">
             <div class="text-muted small fw-bold text-uppercase mb-2">Net Balance</div>
-            <div class="h2 mb-0 text-primary fw-bold">${{ "{:,.2f}".format(summary.balance) }}</div>
+            <div class="h2 mb-0 text-primary fw-bold">{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(summary.balance) }}</div>
             <div class="small mt-2 text-muted">Current Funds</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm p-4 h-100" style="border-left: 5px solid #f59e0b !important;">
             <div class="text-muted small fw-bold text-uppercase mb-2">Receivables</div>
-            <div class="h2 mb-0 text-warning fw-bold">${{ "{:,.2f}".format(summary.outstanding) }}</div>
+            <div class="h2 mb-0 text-warning fw-bold">{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(summary.outstanding) }}</div>
             <div class="small mt-2 text-muted">Unpaid Maintenance</div>
         </div>
     </div>
@@ -57,7 +57,7 @@
                             <td>
                                 <span class="badge bg-light text-dark border p-2">{{ cat.category }}</span>
                             </td>
-                            <td class="text-end fw-bold">${{ "{:,.2f}".format(cat.total) }}</td>
+                            <td class="text-end fw-bold">{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(cat.total) }}</td>
                         </tr>
                         {% else %}
                         <tr>

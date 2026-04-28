@@ -17,7 +17,7 @@
                 </div>
                 <div class="fw-bold small">{{ s.name }}</div>
             </div>
-            <div class="h4 mb-1">${{ "{:,.0f}".format(s.total_collected) }}</div>
+            <div class="h4 mb-1">{{ app_settings.get('currency', '$') }}{{ "{:,.0f}".format(s.total_collected) }}</div>
             <div class="progress" style="height: 6px; margin-top: 8px;">
                 {% set total = s.total_collected + s.total_pending %}
                 <div class="progress-bar bg-success" style="width: {{ (s.total_collected / total * 100) if total > 0 else 0 }}%"></div>

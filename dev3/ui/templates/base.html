@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocietyPro - Premium Society Management</title>
+    <title>{{ app_settings.get('app_name', 'SocietyPro') }} - Premium Society Management</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
     <aside style="display: flex; flex-direction: column;">
         <div class="logo" style="flex-shrink: 0;">
             <i class="fas fa-building-shield"></i>
-            <div>Society<span>Pro</span></div>
+            <div>{{ app_settings.get('app_name', 'SocietyPro') | replace('Pro', '') }}<span>{{ 'Pro' if 'Pro' in app_settings.get('app_name', 'SocietyPro') else '' }}</span></div>
         </div>
         
         <nav style="flex: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">

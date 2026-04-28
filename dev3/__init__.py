@@ -89,4 +89,15 @@ def create_app():
         from flask import send_from_directory
         return send_from_directory(os.path.join(app.root_path, 'ui', 'uploads'), filename)
 
+    @app.context_processor
+    def inject_global_data():
+        from sqlalchemy import text
+        try:
+            # Fetch all app settings into a dictionary
+            rows = db.session.execute(text("SELECT key, value FROM app_settings")).fetchall()
+            settings = {r[0]: r[1] for r in rows}
+        except:
+            settings = {}
+        return dict(app_settings=settings)
+
     return app

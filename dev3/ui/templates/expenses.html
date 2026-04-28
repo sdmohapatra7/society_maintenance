@@ -27,7 +27,7 @@
                     <small style="color: var(--text-muted);">{{ e.description }}</small>
                 </td>
                 <td style="padding: 1rem;">{{ e.category }}</td>
-                <td style="padding: 1rem;"><strong>${{ "{:,.2f}".format(e.amount) }}</strong></td>
+                <td style="padding: 1rem;"><strong>{{ app_settings.get('currency', '$') }}{{ "{:,.2f}".format(e.amount) }}</strong></td>
                 <td style="padding: 1rem;">
                     {% if e.receipt_url %}
                     <a href="{{ e.receipt_url }}" target="_blank" class="btn btn-sm btn-light" title="View Receipt">

@@ -103,11 +103,15 @@ class MaintenanceBL:
         
         pdf.ln(10)
         
+        # Fetch Currency from Settings
+        settings_q = text("SELECT value FROM app_settings WHERE key = 'currency'")
+        currency_symbol = db.session.execute(settings_q).scalar() or "$"
+
         # Table Header
         pdf.set_fill_color(240, 240, 240)
         pdf.set_font("Helvetica", "B", 12)
         pdf.cell(130, 10, "Description", 1, 0, "L", True)
-        pdf.cell(60, 10, "Amount (INR)", 1, 1, "R", True)
+        pdf.cell(60, 10, f"Amount ({currency_symbol})", 1, 1, "R", True)
         
         # Table Rows
         pdf.set_font("Helvetica", "", 12)
