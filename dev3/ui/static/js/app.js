@@ -122,6 +122,7 @@ const SocietyPro = {
             
             html += '<td class="text-end">';
             actions.forEach(action => {
+                if (action.condition && !action.condition(row)) return;
                 const icon = action.icon || 'fa-question';
                 const cls = action.class || 'btn-outline-primary';
                 html += `<button class="btn btn-sm ${cls} ms-1" title="${action.label}" onclick="${action.onClick}(${row.id})"><i class="fas ${icon}"></i></button>`;

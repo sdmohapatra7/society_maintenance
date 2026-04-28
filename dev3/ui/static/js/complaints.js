@@ -48,13 +48,11 @@ const Complaints = {
             }
 
             const actions = [
-                { label: 'Edit', icon: 'fa-edit', class: 'btn-outline-primary', onClick: 'editComplaint' },
+                { label: 'Edit', icon: 'fa-edit', class: 'btn-outline-primary', onClick: 'editComplaint', condition: (r) => r.status === 'open' },
                 { label: 'Delete', icon: 'fa-trash', class: 'btn-outline-danger', onClick: 'deleteComplaint' }
             ];
 
-            // Add Resolve only if it's open and user has rights (handled by backend but UI should match)
-            // For now let's just show it.
-            actions.unshift({ label: 'Resolve', icon: 'fa-check', class: 'btn-outline-success', onClick: 'resolveComplaint' });
+            actions.unshift({ label: 'Resolve', icon: 'fa-check', class: 'btn-outline-success', onClick: 'resolveComplaint', condition: (r) => r.status === 'open' });
 
             SocietyPro.renderTable('#complaintsGrid', columns, data, actions);
         });
