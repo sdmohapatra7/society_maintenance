@@ -74,32 +74,46 @@ def create_complaint():
     title = request.form.get('title')
     description = request.form.get('description')
     
-    document_url = None
-    if 'document' in request.files:
-        file = request.files['document']
-        if file:
-            filename = secure_filename(file.filename)
-            upload_path = os.path.join(current_app.root_path, 'ui', 'uploads', 'complaints', filename)
-            file.save(upload_path)
-            document_url = f"/ui/uploads/complaints/{filename}"
-
-    from dev3.sql import complaint_queries
     from dev3.common import db
     from sqlalchemy import text
     
+    # 1. Insert complaint first to get the ID
     q = text("""
-        INSERT INTO complaints (user_id, title, description, document_url)
-        VALUES (:user_id, :title, :description, :document_url)
-        RETURNING id, title, description, status, document_url
+        INSERT INTO complaints (user_id, title, description, status)
+        VALUES (:user_id, :title, :description, 'open')
+        RETURNING id
     """)
     res = db.session.execute(q, {
         "user_id": current_user.id,
         "title": title,
-        "description": description,
-        "document_url": document_url
+        "description": description
     })
-    row = res.fetchone()
+    complaint_id = res.fetchone().id
+    
+    # 2. Handle multiple documents
+    document_paths = []
+    if 'document' in request.files:
+        files = request.files.getlist('document')
+        for file in files:
+            if file and file.filename:
+                filename = secure_filename(file.filename)
+                upload_dir = os.path.join(current_app.root_path, 'ui', 'uploads', 'complaints', str(complaint_id))
+                if not os.path.exists(upload_dir):
+                    os.makedirs(upload_dir)
+                
+                upload_path = os.path.join(upload_dir, filename)
+                file.save(upload_path)
+                document_paths.append(f"/ui/uploads/complaints/{complaint_id}/{filename}")
+
+    # 3. Update complaint with document URLs
+    doc_url_str = ",".join(document_paths) if document_paths else None
+    db.session.execute(text("UPDATE complaints SET document_url = :doc_url WHERE id = :id"), 
+                       {"doc_url": doc_url_str, "id": complaint_id})
     db.session.commit()
+    
+    # Return the full object
+    q_full = text("SELECT * FROM complaints WHERE id = :id")
+    row = db.session.execute(q_full, {"id": complaint_id}).fetchone()
     return jsonify(dict(row._mapping)), 201
 
 @complaint_bp.route('/api/<int:id>/status', methods=['PATCH'])

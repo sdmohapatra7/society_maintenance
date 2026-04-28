@@ -5,6 +5,38 @@
     <h1>Maintenance Billing History</h1>
 </div>
 
+<div class="card mb-4" style="padding: 1.5rem; background: var(--bg-secondary);">
+    <form method="GET" class="row g-3 align-items-end">
+        {% if current_user.role != 'resident' %}
+        <div class="col-md-3">
+            <label class="form-label">Society</label>
+            <select name="society_id" class="form-select">
+                <option value="">All Societies</option>
+                {% for s in societies %}
+                <option value="{{ s.id }}" {% if selected_society == s.id|string %}selected{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">House ID (Optional)</label>
+            <input type="number" name="house_id" class="form-control" value="{{ selected_house or '' }}" placeholder="House ID">
+        </div>
+        {% endif %}
+        <div class="col-md-{% if current_user.role == 'resident' %}8{% else %}2{% endif %}">
+            <label class="form-label">Month</label>
+            <input type="month" name="month" class="form-control" value="{{ selected_month or '' }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+        </div>
+        <div class="col-md-2">
+            <a href="/billing/" class="btn btn-light w-100">Clear</a>
+        </div>
+    </form>
+</div>
+
 <div class="card">
     <table style="width: 100%; border-collapse: collapse;">
         <thead>
@@ -20,8 +52,14 @@
         <tbody>
             {% for b in bills %}
             <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 1rem;">{{ b.society_name }}</td>
-                <td style="padding: 1rem;">{{ b.wing }}-{{ b.house_no }}</td>
+                <td style="padding: 1rem;">
+                    <a href="/billing/?society_id={{ b.society_id }}" class="text-decoration-none">{{ b.society_name }}</a>
+                </td>
+                <td style="padding: 1rem;">
+                    <a href="/billing/?society_id={{ b.society_id }}&house_id={{ b.house_id }}" class="text-decoration-none">
+                        {{ b.wing }}-{{ b.house_no }}
+                    </a>
+                </td>
                 <td style="padding: 1rem;">{{ b.bill_month if b.bill_month else '' }}</td>
                 <td style="padding: 1rem;"><strong>${{ "{:,.2f}".format(b.amount) }}</strong></td>
                 <td style="padding: 1rem;">

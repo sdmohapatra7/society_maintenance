@@ -21,6 +21,26 @@ const Complaints = {
                     const cls = v === 'open' ? 'bg-warning text-dark' : 'bg-success';
                     return `<span class="badge ${cls}">${v}</span>`;
                 }},
+                { key: 'document_url', label: 'Documents', format: (v) => {
+                    if (!v) return '<span class="text-muted small">None</span>';
+                    const urls = v.split(',');
+                    return `<div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        ${urls.map(url => {
+                            const isImg = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+                            const name = url.split('/').pop();
+                            if (isImg) {
+                                return `<a href="${url}" target="_blank" title="${name}">
+                                            <img src="${url}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); transition: transform 0.2s;" 
+                                                 onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                                        </a>`;
+                            } else {
+                                return `<a href="${url}" target="_blank" class="btn btn-sm btn-light p-1" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="${name}">
+                                            <i class="fas fa-file-alt text-primary" style="font-size: 0.8rem;"></i>
+                                        </a>`;
+                            }
+                        }).join('')}
+                    </div>`;
+                }},
             ];
             
             if (data.length > 0 && data[0].username) {

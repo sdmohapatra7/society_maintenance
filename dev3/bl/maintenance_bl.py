@@ -20,18 +20,42 @@ class MaintenanceBL:
         if isinstance(due_date, str):
             due_date = datetime.strptime(due_date, '%Y-%m-%d').date()
 
-        q = text(maintenance_queries.insert_bill())
-        res = db.session.execute(q, {
-            "house_id": house_id,
-            "bill_month": bill_month,
-            "amount": amount,
-            "fixed_charge": fixed_charge,
-            "area_charge": area_charge,
-            "late_fee": 0,
-            "other_charges": 0,
-            "due_date": due_date,
-            "status": status
-        })
+        # Check if bill already exists for this house and month to prevent overlap
+        check_q = text("SELECT id FROM maintenance_bills WHERE house_id = :house_id AND bill_month = :bill_month")
+        existing = db.session.execute(check_q, {"house_id": house_id, "bill_month": bill_month}).fetchone()
+
+        if existing:
+            # Update existing bill
+            update_q = text("""
+                UPDATE maintenance_bills 
+                SET amount = :amount, fixed_charge = :fixed_charge, area_charge = :area_charge, 
+                    due_date = :due_date, status = :status
+                WHERE id = :id
+                RETURNING *
+            """)
+            res = db.session.execute(update_q, {
+                "id": existing.id,
+                "amount": amount,
+                "fixed_charge": fixed_charge,
+                "area_charge": area_charge,
+                "due_date": due_date,
+                "status": status
+            })
+        else:
+            # Insert new bill
+            q = text(maintenance_queries.insert_bill())
+            res = db.session.execute(q, {
+                "house_id": house_id,
+                "bill_month": bill_month,
+                "amount": amount,
+                "fixed_charge": fixed_charge,
+                "area_charge": area_charge,
+                "late_fee": 0,
+                "other_charges": 0,
+                "due_date": due_date,
+                "status": status
+            })
+            
         db.session.commit()
         return res.fetchone()
 
@@ -124,9 +148,10 @@ class MaintenanceBL:
         pdf.cell(0, 10, "Thank you for being a part of our community!", ln=True, align="C")
         
         # Return as bytes
-        buffer = io.BytesIO()
-        pdf.output(buffer)
-        return buffer.getvalue()
+        res = pdf.output(dest='S')
+        if isinstance(res, str):
+            return res.encode('latin-1')
+        return res
 
     @staticmethod
     def generate_invoice_html(bill_id):

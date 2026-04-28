@@ -18,31 +18,57 @@ maintenance_bp = Blueprint('maintenance', __name__)
 def index():
     if not current_user.has_feature('billing'):
         return "Unauthorized", 403
-    # List all bills or user's bills
+    
+    society_id = request.args.get('society_id')
+    house_id = request.args.get('house_id')
+    month = request.args.get('month')
+    
     from dev3.common import db
     from sqlalchemy import text
     
+    societies = []
+    if current_user.role != 'resident':
+        societies = db.session.execute(text("SELECT id, name FROM societies")).fetchall()
+    
     if current_user.role == 'resident':
-        q = text("""
-            SELECT b.*, h.house_no, h.wing, s.name as society_name 
+        q_str = """
+            SELECT b.*, h.house_no, h.wing, h.id as house_id, s.name as society_name, s.id as society_id
             FROM maintenance_bills b
             JOIN houses h ON b.house_id = h.id
             JOIN societies s ON h.society_id = s.id
-            WHERE h.resident_email = :email OR h.id = :house_id
-            ORDER BY b.bill_month DESC
-        """)
-        bills = db.session.execute(q, {"email": current_user.email, "house_id": current_user.house_id or -1}).fetchall()
+            WHERE (h.resident_email = :email OR h.id = :u_house_id)
+        """
+        params = {"email": current_user.email, "u_house_id": current_user.house_id or -1}
+        if month:
+            q_str += " AND b.bill_month = :month"
+            params['month'] = month + "-01" if len(month) == 7 else month
+            
+        q_str += " ORDER BY b.bill_month DESC"
+        bills = db.session.execute(text(q_str), params).fetchall()
     else:
-        q = text("""
-            SELECT b.*, h.house_no, h.wing, s.name as society_name 
+        query_str = """
+            SELECT b.*, h.house_no, h.wing, h.id as house_id, s.name as society_name, s.id as society_id
             FROM maintenance_bills b
             JOIN houses h ON b.house_id = h.id
             JOIN societies s ON h.society_id = s.id
-            ORDER BY b.bill_month DESC
-        """)
-        bills = db.session.execute(q).fetchall()
+            WHERE 1=1
+        """
+        params = {}
+        if society_id:
+            query_str += " AND h.society_id = :society_id"
+            params['society_id'] = society_id
+        if house_id:
+            query_str += " AND h.house_id = :house_id"
+            params['house_id'] = house_id
+        if month:
+            query_str += " AND b.bill_month = :month"
+            params['month'] = month + "-01" if len(month) == 7 else month
+            
+        query_str += " ORDER BY b.bill_month DESC"
+        bills = db.session.execute(text(query_str), params).fetchall()
         
-    return render_template('billing.html', bills=bills)
+    return render_template('billing.html', bills=bills, societies=societies, 
+                           selected_society=society_id, selected_house=house_id, selected_month=month)
 
 @maintenance_bp.route('/generate', methods=['POST'])
 def generate_bill():
