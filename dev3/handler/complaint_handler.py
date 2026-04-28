@@ -68,6 +68,11 @@ def update_complaint(id):
 import os
 from werkzeug.utils import secure_filename
 
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
 @complaint_bp.route('/api', methods=['POST'])
 @login_required
 def create_complaint():
@@ -90,12 +95,12 @@ def create_complaint():
     })
     complaint_id = res.fetchone().id
     
-    # 2. Handle multiple documents
+    # 2. Handle multiple documents (images only)
     document_paths = []
     if 'document' in request.files:
         files = request.files.getlist('document')
         for file in files:
-            if file and file.filename:
+            if file and file.filename and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 upload_dir = os.path.join(current_app.root_path, 'ui', 'uploads', 'complaints', str(complaint_id))
                 if not os.path.exists(upload_dir):

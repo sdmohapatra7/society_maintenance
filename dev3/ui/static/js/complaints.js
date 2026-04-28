@@ -72,7 +72,19 @@ const Complaints = {
                 description: $('textarea[name="description"]').val()
             };
         } else {
-            data = new FormData(e.target);
+            const formData = new FormData(e.target);
+            // Client-side validation for images
+            const files = formData.getAll('document');
+            for (let file of files) {
+                if (file.name) {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    if (!['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+                        SocietyPro.alert('Invalid format: ' + file.name + '. Only images are allowed.', 'danger');
+                        return;
+                    }
+                }
+            }
+            data = formData;
         }
 
         SocietyPro.api(url, method, data, (res) => {
