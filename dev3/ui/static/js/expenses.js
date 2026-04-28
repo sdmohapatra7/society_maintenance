@@ -15,6 +15,18 @@ const Expenses = {
         
         const formData = new FormData($('#expenseForm')[0]);
         
+        // Client-side file validation
+        const fileInput = $('input[name="receipt"]')[0];
+        if (fileInput && fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const ext = file.name.split('.').pop().toLowerCase();
+            const allowed = ['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx'];
+            if (!allowed.includes(ext)) {
+                SocietyPro.alert('Invalid file format. Allowed: PDF, Images, DOCX', 'danger');
+                return;
+            }
+        }
+        
         // Use raw AJAX for FormData
         $.ajax({
             url: url,

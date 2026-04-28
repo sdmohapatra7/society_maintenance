@@ -39,8 +39,8 @@
                 </td>
                 <td style="padding: 1rem;" class="text-end">
                     {% if current_user.role in ['admin', 'staff'] %}
-                    <button class="btn btn-sm btn-light text-primary me-1" onclick="Expenses.edit({{ e.id }})" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-sm btn-light text-danger" onclick="Expenses.delete({{ e.id }})" title="Delete"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-sm btn-light text-primary me-1" onclick="Expenses.edit('{{ e.id }}')" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-light text-danger" onclick="Expenses.delete('{{ e.id }}')" title="Delete"><i class="fas fa-trash"></i></button>
                     {% else %}
                     <span class="text-muted small">Locked</span>
                     {% endif %}
