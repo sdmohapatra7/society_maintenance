@@ -114,7 +114,8 @@ society_maintenance/
 .\venv\Scripts\activate
 7.Start the server
 python run.py
-
+8.kill all running port
+netstat -ano | findstr :5000
 ## 👨‍💻 Contributing
 This project is architected for scalability. To add a new feature:
 1. Define the SQL in `dev3/sql/`.

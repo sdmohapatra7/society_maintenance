@@ -26,60 +26,61 @@
         
         <nav style="flex: 1; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">
             <ul>
-                {% if current_user.has_feature('dashboard') %}
+                {% if current_user.is_authenticated and current_user.has_feature('dashboard') %}
                 <li><a href="/" class="{% if request.endpoint and request.endpoint == 'main.dashboard' %}active{% endif %}"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 {% endif %}
                 
-                {% if current_user.has_feature('societies') %}
+                {% if current_user.is_authenticated and current_user.has_feature('societies') %}
                 <li><a href="/societies/" class="{% if request.endpoint and (request.endpoint.startswith('society.') or request.endpoint.startswith('house.')) %}active{% endif %}"><i class="fas fa-city"></i> Societies</a></li>
                 {% endif %}
                 
-                {% if current_user.has_feature('users') %}
+                {% if current_user.is_authenticated and current_user.has_feature('users') %}
                 <li><a href="/users/" class="{% if request.endpoint and request.endpoint.startswith('user.') %}active{% endif %}"><i class="fas fa-users-gear"></i> Users</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('access') %}
+                {% if current_user.is_authenticated and current_user.has_feature('access') %}
                 <li><a href="/access/" class="{% if request.endpoint and request.endpoint.startswith('access.') %}active{% endif %}"><i class="fas fa-user-shield"></i> Access Management</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('accounting') %}
+                {% if current_user.is_authenticated and current_user.has_feature('accounting') %}
                 <li><a href="/accounting/" class="{% if request.endpoint and request.endpoint.startswith('accounting.') %}active{% endif %}"><i class="fas fa-calculator"></i> Accounting</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('billing') %}
+                {% if current_user.is_authenticated and current_user.has_feature('billing') %}
                 <li><a href="/billing/" class="{% if request.endpoint and request.endpoint.startswith('maintenance.') %}active{% endif %}"><i class="fas fa-file-invoice-dollar"></i> Billing</a></li>
                 {% endif %}
                 
-                {% if current_user.has_feature('expenses') %}
+                {% if current_user.is_authenticated and current_user.has_feature('expenses') %}
                 <li><a href="/expenses/" class="{% if request.endpoint and request.endpoint.startswith('expense.') %}active{% endif %}"><i class="fas fa-wallet"></i> Expenses</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('reports') %}
+                {% if current_user.is_authenticated and current_user.has_feature('reports') %}
                 <li><a href="/reports/" class="{% if request.endpoint and request.endpoint.startswith('report.') %}active{% endif %}"><i class="fas fa-file-contract"></i> Reports</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('complaints') %}
+                {% if current_user.is_authenticated and current_user.has_feature('complaints') %}
                 <li><a href="/complaints/" class="{% if request.endpoint and request.endpoint.startswith('complaint.') %}active{% endif %}"><i class="fas fa-circle-exclamation"></i> Complaints</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('events') %}
+                {% if current_user.is_authenticated and current_user.has_feature('events') %}
                 <li><a href="/events/" class="{% if request.endpoint and request.endpoint.startswith('event.') %}active{% endif %}"><i class="fas fa-calendar-alt"></i> Events & Notices</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('visitors') %}
+                {% if current_user.is_authenticated and current_user.has_feature('visitors') %}
                 <li><a href="/visitors/" class="{% if request.endpoint and request.endpoint.startswith('visitors.') %}active{% endif %}"><i class="fas fa-id-badge"></i> Visitors</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('vehicles') %}
+                {% if current_user.is_authenticated and current_user.has_feature('vehicles') %}
                 <li><a href="/vehicles/" class="{% if request.endpoint and request.endpoint.startswith('vehicles.') %}active{% endif %}"><i class="fas fa-car"></i> Vehicles</a></li>
                 {% endif %}
 
-                {% if current_user.has_feature('settings') %}
+                {% if current_user.is_authenticated and current_user.has_feature('settings') %}
                 <li><a href="/settings/" class="{% if request.endpoint and request.endpoint.startswith('settings.') %}active{% endif %}"><i class="fas fa-sliders"></i> Settings</a></li>
                 {% endif %}
             </ul>
         </nav>
 
+        {% if current_user.is_authenticated %}
         <div style="flex-shrink: 0; padding-top: 1.5rem; margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
             <div style="margin-bottom: 1rem;">
                 <div style="font-size: 0.9rem; font-weight: 600;">{{ current_user.username }}</div>
@@ -89,6 +90,7 @@
                 <i class="fas fa-right-from-bracket"></i> Logout
             </a>
         </div>
+        {% endif %}
     </aside>
 
     <main>
