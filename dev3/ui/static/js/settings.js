@@ -48,6 +48,23 @@ const Settings = {
                 setTimeout(() => location.reload(), 800);
             });
         });
+    },
+
+    submitCategory: function() {
+        const data = {
+            category: $('#addCategoryForm input[name="category"]').val().toUpperCase().replace(/ /g, '_'),
+            label: $('#addCategoryForm input[name="label"]').val(),
+            value: $('#addCategoryForm input[name="value"]').val()
+        };
+        
+        if(!data.category || !data.label || !data.value) {
+            return SocietyPro.alert('All fields are required', 'error');
+        }
+
+        SocietyPro.api('/settings/master/add', 'POST', data, () => {
+            SocietyPro.alert('Category created successfully!', 'success');
+            setTimeout(() => location.reload(), 800);
+        });
     }
 };
 
@@ -57,4 +74,5 @@ $(document).ready(() => {
     window.deleteMaster = Settings.deleteMaster.bind(Settings);
     window.submitRole = Settings.submitRole.bind(Settings);
     window.deleteRole = Settings.deleteRole.bind(Settings);
+    window.submitCategory = Settings.submitCategory.bind(Settings);
 });

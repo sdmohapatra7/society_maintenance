@@ -19,7 +19,7 @@ def index():
     
     from dev3.common import db
     from sqlalchemy import text
-    categories = db.session.execute(text("SELECT * FROM master_data WHERE category = 'EXPENSE_CATEGORY' AND is_active = TRUE")).fetchall()
+    categories = db.session.execute(text("SELECT * FROM master_data WHERE category = 'EXPENSE_CATEGORY'")).fetchall()
     
     expenses = ExpenseBL.list_all()
     return render_template('expenses.html', expenses=expenses, categories=categories)
