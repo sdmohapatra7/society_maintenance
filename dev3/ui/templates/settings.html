@@ -72,10 +72,10 @@
                 {% endfor %}
             </div>
 
-            <!-- New Category Placeholder -->
+            <!-- New Category Section -->
             <div class="mt-4 p-3 border rounded-3 border-dashed text-center">
-                <button class="btn btn-sm btn-outline-primary" onclick="alert('Contact developer to add new system categories')">
-                    <i class="fas fa-plus-circle me-1"></i> Request New Category
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <i class="fas fa-plus-circle me-1"></i> Create New System Category
                 </button>
             </div>
         </div>
@@ -148,6 +148,40 @@
                     </div>
                     <div class="d-grid">
                         <button type="button" class="btn btn-warning text-white" onclick="submitRole()">Create Role</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Master Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Create New Master Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Adding a new category will create a new group in the Master Data Management section.</p>
+                <form id="addCategoryForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Category Code</label>
+                        <input type="text" class="form-control" name="category" placeholder="e.g. EXPENSE_TYPE, HOUSE_STATUS" required>
+                        <div class="form-text x-small">Use UPPERCASE and underscores (no spaces).</div>
+                    </div>
+                    <div class="row g-2 mb-4">
+                        <div class="col-12"><label class="form-label small fw-bold">First Entry</label></div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" name="label" placeholder="Display Name (e.g. Plumbing)" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control form-control-sm" name="value" placeholder="Internal Value" required>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" onclick="submitCategory()">Create Category</button>
                     </div>
                 </form>
             </div>
