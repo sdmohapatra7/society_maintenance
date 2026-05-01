@@ -2,6 +2,10 @@
 
 **SocietyPro** is a state-of-the-art, full-stack web application designed to streamline the administration and financial management of modern residential societies. It provides a seamless experience for administrators, staff, and residents alike.
 
+### 🌐 Live Demo
+**URL:** [https://society-maintenance.onrender.com](https://society-maintenance.onrender.com)
+
+
 ---
 
 ## 🚀 Key Features
@@ -114,8 +118,7 @@ society_maintenance/
 .\venv\Scripts\activate
 7.Start the server
 python run.py
-8.kill all running port
-netstat -ano | findstr :5000
+
 ## 👨‍💻 Contributing
 This project is architected for scalability. To add a new feature:
 1. Define the SQL in `dev3/sql/`.
