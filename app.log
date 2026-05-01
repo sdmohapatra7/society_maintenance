@@ -167,3 +167,4 @@
 2026-05-01 12:31:48,522 INFO:  * Debugger PIN: 210-633-542 [in C:\shakti\project\python\society_maintenance\venv\Lib\site-packages\werkzeug\_internal.py:97]
 2026-05-01 12:31:48,620 WARNING:  * Debugger is active! [in C:\shakti\project\python\society_maintenance\venv\Lib\site-packages\werkzeug\_internal.py:97]
 2026-05-01 12:31:48,650 INFO:  * Debugger PIN: 210-633-542 [in C:\shakti\project\python\society_maintenance\venv\Lib\site-packages\werkzeug\_internal.py:97]
+2026-05-01 13:01:41,490 INFO:  * Detected change in 'C:\\shakti\\project\\python\\society_maintenance\\dev3\\handler\\expense_handler.py', reloading [in C:\shakti\project\python\society_maintenance\venv\Lib\site-packages\werkzeug\_internal.py:97]

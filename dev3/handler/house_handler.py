@@ -7,7 +7,7 @@ house_bp = Blueprint('house', __name__)
 def list_by_society(society_id):
     from dev3.common import db
     from sqlalchemy import text
-    house_types = db.session.execute(text("SELECT * FROM master_data WHERE category = 'HOUSE_TYPE' AND is_active = TRUE")).fetchall()
+    house_types = db.session.execute(text("SELECT * FROM master_data WHERE category = 'HOUSE_TYPE'")).fetchall()
     return render_template('houses.html', society_id=society_id, house_types=house_types)
 
 @house_bp.route('/api', methods=['POST'])
