@@ -1,4 +1,5 @@
 import os
+import logging
 from flask import Flask
 from .common import Config, db
 from .common.mail_utils import mail
@@ -14,9 +15,25 @@ login_manager = LoginManager()
 oauth = OAuth()
 
 def create_app():
-    import logging
-    logging.basicConfig(filename='app.log', level=logging.INFO, 
-                        format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+    # Create a custom logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    
+    # Create handlers
+    f_handler = logging.FileHandler('app.log')
+    c_handler = logging.StreamHandler()
+    f_handler.setLevel(logging.INFO)
+    c_handler.setLevel(logging.INFO)
+
+    # Create formatters and add it to handlers
+    log_format = logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+    f_handler.setFormatter(log_format)
+    c_handler.setFormatter(log_format)
+
+    # Add handlers to the logger
+    if not logger.handlers:
+        logger.addHandler(f_handler)
+        logger.addHandler(c_handler)
     
     app = Flask(__name__, 
                 template_folder='ui/templates', 

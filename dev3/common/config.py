@@ -3,15 +3,16 @@ import os
 class Config:
     # Flask settings
     SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
-    DEBUG = True
+    DEBUG = os.getenv("DEBUG", "True").lower() == "true"
     HOST = os.getenv("HOST", "127.0.0.1")
     PORT = int(os.getenv("PORT", "5000"))
 
     # Database
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "postgresql+pg8000://postgres:password@localhost:5432/society_db"
-    )
+    _db_url = os.getenv("DATABASE_URL", "postgresql+pg8000://postgres:password@localhost:5432/society_db")
+    if _db_url and _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    
+    SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Email Settings
