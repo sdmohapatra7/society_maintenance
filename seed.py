@@ -42,5 +42,44 @@ with app.app_context():
             ON CONFLICT DO NOTHING
         """), {"cat": cat, "label": label, "val": val})
         
+    # Seed Roles
+    roles = [
+        ('admin', 'Full system access'),
+        ('resident', 'Society resident access'),
+        ('security_guard', 'Visitor and vehicle tracking'),
+        ('accountant', 'Billing and expense management'),
+        ('staff', 'General society management')
+    ]
+    for name, desc in roles:
+        db.session.execute(text("""
+            INSERT INTO roles (name, description) 
+            VALUES (:name, :desc) 
+            ON CONFLICT (name) DO NOTHING
+        """), {"name": name, "desc": desc})
+
+    # Seed Role Permissions (Basic defaults)
+    features = ['dashboard', 'societies', 'users', 'billing', 'expenses', 'reports', 'complaints', 'events', 'visitors', 'vehicles', 'settings', 'access', 'accounting']
+    for role_name, _ in roles:
+        for feature in features:
+            # Admins get everything, others get limited
+            can_access = True if role_name == 'admin' else False
+            
+            # Custom defaults for roles
+            if role_name == 'resident' and feature in ['dashboard', 'billing', 'complaints', 'events']:
+                can_access = True
+            if role_name == 'security_guard' and feature in ['dashboard', 'visitors', 'vehicles']:
+                can_access = True
+            if role_name == 'accountant' and feature in ['dashboard', 'billing', 'expenses', 'reports', 'accounting']:
+                can_access = True
+            if role_name == 'staff' and feature in ['dashboard', 'societies', 'users', 'billing', 'expenses', 'complaints', 'events', 'visitors', 'vehicles']:
+                can_access = True
+                
+            db.session.execute(text("""
+                INSERT INTO role_permissions (role, feature_name, can_access) 
+                VALUES (:role, :feature, :access)
+                ON CONFLICT (role, feature_name) DO NOTHING
+            """), {"role": role_name, "feature": feature, "access": can_access})
+        
     db.session.commit()
-    print("Default settings and master data seeded.")
+    print("Default settings, master data, roles, and permissions seeded.")
+
